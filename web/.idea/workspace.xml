@@ -5,13 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e227357a-ebd1-4a07-aa9d-3aba2a036ff2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../web.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/jsBridge.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../android/app/src/main/java/me/jameshunt/digitialhangboard/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../android/app/src/main/java/me/jameshunt/digitialhangboard/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../cad/digitalHangBoard.FCStd" beforeDir="false" afterPath="$PROJECT_DIR$/../cad/digitalHangBoard.FCStd" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,7 +57,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1699727804085</updated>
-      <workItem from="1699727805122" duration="2370000" />
+      <workItem from="1699727805122" duration="3511000" />
     </task>
     <servers />
   </component>
