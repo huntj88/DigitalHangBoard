@@ -2,14 +2,11 @@ import Image from 'next/image'
 import styles from './page.module.css'
 import React from "react";
 import InitHelper from "@/app/InitHelper";
-import {NoSSR} from "@/app/NoSSRWrapper";
 
 export default function Home() {
   return (
     <main className={styles.main}>
-      <NoSSR>
-        <InitHelper/>
-      </NoSSR>
+      <InitHelper/>
       <div className={styles.description}>
         <p>
           Get started by editing&nbsp;

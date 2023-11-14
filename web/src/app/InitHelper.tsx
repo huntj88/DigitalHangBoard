@@ -1,5 +1,5 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+'use client'
+
 import { setupPostMessaging } from "@/app/jsBridge";
 import eruda from 'eruda';
 import React from "react";
