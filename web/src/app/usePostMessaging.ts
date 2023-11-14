@@ -9,6 +9,7 @@ export function usePostMessaging(onMessage: (message: any) => void) {
 
     useEffect(() => {
         const {postMessage} = setupPostMessaging(onMessage)
+        console.log("postMessage effect", postMessage)
         setPostMessageState(() => postMessage);
     }, [onMessage])
 
