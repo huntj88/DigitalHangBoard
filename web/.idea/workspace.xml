@@ -7,8 +7,6 @@
     <list default="true" id="e227357a-ebd1-4a07-aa9d-3aba2a036ff2" name="Changes" comment="postMessage hook">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/InitHelper.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/InitHelper.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/jsBridge.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/jsBridge.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/usePostMessaging.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/usePostMessaging.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -60,7 +58,7 @@
       <option name="presentableId" value="Default" />
       <updated>1699727804085</updated>
       <workItem from="1699727805122" duration="3511000" />
-      <workItem from="1699926909987" duration="9102000" />
+      <workItem from="1699926909987" duration="9498000" />
     </task>
     <task id="LOCAL-00001" summary="postMessage hook">
       <option name="closed" value="true" />
@@ -85,7 +83,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/app/InitHelper.tsx</url>
-          <line>16</line>
+          <line>17</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1" />
         </line-breakpoint>

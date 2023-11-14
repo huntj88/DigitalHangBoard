@@ -14,6 +14,7 @@ export default function InitHelper() {
     }, [])
 
     const { postMessage } = usePostMessaging(onMessage)
+    console.log("postMessage", postMessage)
 
     return (
         <button onClick={() => postMessage("blah")}>  Activate Lasers
