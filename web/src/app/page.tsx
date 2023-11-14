@@ -1,8 +1,10 @@
 import Image from 'next/image'
 import styles from './page.module.css'
 import { setupPostMessaging} from "@/app/jsBridge";
+import eruda from 'eruda';
 
 export default function Home() {
+  eruda.init()
   setupPostMessaging()
   return (
     <main className={styles.main}>

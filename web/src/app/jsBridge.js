@@ -7,5 +7,7 @@ export function setupPostMessaging() {
         }
         global.myObject.postMessage("I'm ready!");
         console.log("setup post messaging");
+    } else {
+        console.log("did not setup post messaging", global);
     }
 }
