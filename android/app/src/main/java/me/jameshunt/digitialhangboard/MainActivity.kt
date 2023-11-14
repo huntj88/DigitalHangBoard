@@ -2,6 +2,7 @@ package me.jameshunt.digitialhangboard
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.webkit.WebView
 import androidx.activity.ComponentActivity
 import androidx.webkit.WebViewCompat
@@ -17,6 +18,7 @@ class MainActivity : ComponentActivity() {
         webView.settings.javaScriptEnabled = true
         val myListener =
             WebMessageListener { view, message, sourceOrigin, isMainFrame, replyProxy -> // do something about view, message, sourceOrigin and isMainFrame.
+                Log.d("postMessage", message.data ?: "no message data")
                 if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) {
                     replyProxy.postMessage("Got it!")
                 }
