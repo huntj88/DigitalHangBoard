@@ -1,16 +1,15 @@
 import Image from 'next/image'
 import styles from './page.module.css'
-import { setupPostMessaging } from "@/app/jsBridge";
-import eruda from 'eruda';
 import React from "react";
+import InitHelper from "@/app/InitHelper";
+import {NoSSR} from "@/app/NoSSRWrapper";
 
 export default function Home() {
-  React.useEffect(() => {
-    eruda.init()
-    setupPostMessaging()
-  }, [])
   return (
     <main className={styles.main}>
+      <NoSSR>
+        <InitHelper/>
+      </NoSSR>
       <div className={styles.description}>
         <p>
           Get started by editing&nbsp;
