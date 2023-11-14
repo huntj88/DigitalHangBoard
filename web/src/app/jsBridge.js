@@ -9,7 +9,7 @@ export function setupPostMessaging(onMessage) {
     } else {
         console.log("did not setup post messaging", global);
         return {
-            postMessage: (message) => { console.log("NoOp postMessage", message)}
+            postMessage: undefined
         }
     }
 }

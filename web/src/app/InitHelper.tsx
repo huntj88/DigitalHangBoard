@@ -1,15 +1,22 @@
 'use client'
 
-import { setupPostMessaging } from "@/app/jsBridge";
 import eruda from 'eruda';
-import React from "react";
+import {useCallback, useEffect} from "react";
+import {usePostMessaging} from "@/app/usePostMessaging";
 
 export default function InitHelper() {
-    React.useEffect(() => {
+    useEffect(() => {
         eruda.init()
-        setupPostMessaging()
     }, [])
+
+    const onMessage = useCallback((message: any) => {
+        console.log("onMessage", message)
+    }, [])
+
+    const { postMessage } = usePostMessaging(onMessage)
+
     return (
-        <div/>
+        <button onClick={() => postMessage("blah")}>  Activate Lasers
+        </button>
     )
 }

@@ -6,10 +6,6 @@ import {NoSSR} from "@/app/NoSSRWrapper";
 import {usePostMessaging} from "@/app/usePostMessaging";
 
 export default function Home() {
-  const { postMessage } = usePostMessaging((message: any) => {
-    console.log("onMessage", message)
-  })
-  postMessage("hello")
   return (
     <main className={styles.main}>
       <NoSSR>
