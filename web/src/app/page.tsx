@@ -1,102 +1,156 @@
-import Image from 'next/image'
-import styles from './page.module.css'
-import React from "react";
-import InitHelper from "@/app/InitHelper";
-import {NoSSR} from "@/app/NoSSRWrapper";
-import {usePostMessaging} from "@/app/usePostMessaging";
+"use client";
+
+import {
+    makeStyles,
+    mergeClasses,
+    shorthands,
+    typographyStyles,
+    tokens,
+    Text,
+    Card,
+    Switch,
+    Avatar,
+} from "@fluentui/react-components";
+import {CheckmarkStarburst16Filled} from "@fluentui/react-icons";
+import {useThemeContext} from "./ThemeProvider";
+import {ChangeEvent} from "react";
+import {SwitchOnChangeData} from "@fluentui/react-switch";
+
+// Create a custom 'useStyles' hook to define the styling for the Home component.
+const useStyles = makeStyles({
+    container: {
+        ...shorthands.padding(tokens.spacingHorizontalXXL),
+        ...shorthands.gap(tokens.spacingVerticalM),
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+    },
+    settings: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        width: "280px",
+    },
+    toggleButton: {
+        marginInlineStart: `calc(-1 * ${tokens.spacingHorizontalS})`,
+    },
+    toggleIcon: {
+        fontSize: "24px",
+    },
+    card: {
+        width: "280px",
+        height: "fit-content",
+    },
+    title: typographyStyles.subtitle2,
+    flex: {
+        ...shorthands.gap("4px"),
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    labels: {
+        ...shorthands.gap("6px"),
+    },
+    row: {
+        display: "flex",
+        alignItems: "flex-start",
+        ...shorthands.gap("12px"),
+    },
+    column: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        ...shorthands.gap("4px"),
+    },
+    label: {
+        ...typographyStyles.body1Stronger,
+        color: tokens.colorBrandForeground2,
+    },
+    caption: {
+        ...typographyStyles.caption1,
+        color: tokens.colorNeutralForeground3,
+    },
+    svg: {
+        width: "12px",
+        height: "12px",
+    },
+});
 
 export default function Home() {
-  return (
-    <main className={styles.main}>
-      <NoSSR>
-        <InitHelper/>
-      </NoSSR>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    // Retrieve the styles object from the 'useStyles' hook.
+    const styles = useStyles();
+    const {theme, setTheme} = useThemeContext();
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+    // Act on toggle click.
+    const handleToggleChange = (event: ChangeEvent<SwitchOnChangeData>) => {
+        const selectedTheme = !event.currentTarget.checked ? "dark" : "light";
+        setTheme(selectedTheme);
+    };
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+    // Check if current theme is set to `light`.
+    const isLightTheme = theme === "light";
+    // Set label for control element based on selected theme.
+    const toggleLabel = isLightTheme ? "Light Theme" : "Dark Theme";
+    // Set icon for cotrol element based on selected theme.
+    const toggleIcon = isLightTheme ? "🌞" : "🌚";
+    // Data with information about actors.
+    const actorsData = [
+        {
+            name: "Ashton Kutcher",
+            description:
+                "Christopher Ashton Kutcher is an American actor, producer, entrepreneur, and former model.",
+        },
+        {
+            name: "Rebel Wilson",
+            description:
+                "Rebel Melanie Elizabeth Wilson is an Australian actress, comedian, writer, singer, and producer.",
+        },
+        {
+            name: "Morgan Freeman",
+            description:
+                "Morgan Freeman is an American actor, director, and narrator.",
+        },
+    ];
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+    // Render the Home component with a Title1 and Text component from Fluent UI.
+    return (
+        <main className={styles.container}>
+            <div className={styles.settings}>
+                <Switch
+                    label={toggleLabel}
+                    checked={theme === "light"}
+                    onChange={handleToggleChange}
+                    className={styles.toggleButton}
+                />
+                <span className={styles.toggleIcon}>{toggleIcon}</span>
+            </div>
+            <Card className={styles.card}>
+                <header className={mergeClasses(styles.flex, styles.labels)}>
+                    <Text as="h1" className={styles.title}>
+                        Favorite Actors
+                    </Text>
+                </header>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+                {actorsData.map((actor, index) => (
+                    <div key={index}>
+                        <div className={styles.row}>
+                            <Avatar
+                                name={actor.name}
+                                badge={{
+                                    icon: <CheckmarkStarburst16Filled className={styles.svg}/>,
+                                }}
+                            />
+                            <div className={styles.column}>
+                                <Text className={styles.label}>{actor.name}</Text>
+                                <Text className={styles.caption}>{actor.description}</Text>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </Card>
+        </main>
+    );
 }

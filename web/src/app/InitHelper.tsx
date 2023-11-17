@@ -13,11 +13,11 @@ export default function InitHelper() {
         console.log("onMessage", message)
     }, [])
 
-    const { postMessage } = usePostMessaging(onMessage)
+    const {postMessage} = usePostMessaging(onMessage)
     console.log("postMessage", postMessage)
 
     return (
-        <button onClick={() => postMessage("blah")}>  Activate Lasers
+        <button onClick={() => postMessage("blah")}> Activate Lasers
         </button>
     )
 }

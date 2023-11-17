@@ -1,4 +1,3 @@
-
 export function setupPostMessaging(onMessage) {
     if (global.myObject) {
         console.log("setting up post messaging", global.myObject.postMessage);

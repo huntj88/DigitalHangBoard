@@ -15,5 +15,9 @@ export function usePostMessaging(onMessage: (message: any) => void) {
 
     console.log("postMessageState", postMessageState)
 
-    return { postMessage: postMessageState ?? ((message) => { console.log("NoOp postMessage", message)}) };
+    return {
+        postMessage: postMessageState ?? ((message) => {
+            console.log("NoOp postMessage", message)
+        })
+    };
 }
