@@ -4,7 +4,7 @@ import eruda from 'eruda';
 import {useCallback, useEffect} from "react";
 import {usePostMessaging} from "@/app/usePostMessaging";
 
-export default function InitHelper() {
+export default function BrowserOnlyInit() {
     useEffect(() => {
         eruda.init()
     }, [])

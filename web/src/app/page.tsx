@@ -11,10 +11,12 @@ import {
     Switch,
     Avatar,
 } from "@fluentui/react-components";
-import {CheckmarkStarburst16Filled} from "@fluentui/react-icons";
 import {useThemeContext} from "./ThemeProvider";
-import {ChangeEvent} from "react";
+import React, {ChangeEvent} from "react";
 import {SwitchOnChangeData} from "@fluentui/react-switch";
+import {AreaChart} from "@fluentui/react-charting";
+import {chartData} from "@/app/sampleData";
+import {CheckmarkStarburst16Filled} from "@fluentui/react-icons";
 
 // Create a custom 'useStyles' hook to define the styling for the Home component.
 const useStyles = makeStyles({
@@ -76,6 +78,9 @@ const useStyles = makeStyles({
     svg: {
         width: "12px",
         height: "12px",
+    },
+    graph: {
+        width: "80vw",
     },
 });
 
@@ -151,6 +156,14 @@ export default function Home() {
                     </div>
                 ))}
             </Card>
+            <div className={styles.graph}>
+                <AreaChart
+                    culture={window.navigator.language}
+                    data={chartData}
+                    enablePerfOptimization={false}
+                    enableReflow={true}
+                />
+            </div>
         </main>
     );
 }
