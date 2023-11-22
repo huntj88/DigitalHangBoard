@@ -5,17 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e227357a-ebd1-4a07-aa9d-3aba2a036ff2" name="Changes" comment="adding fluent ui">
-      <change afterPath="$PROJECT_DIR$/src/app/sampleData.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../cad/digitalHangBoard.FCStd" beforeDir="false" afterPath="$PROJECT_DIR$/../cad/digitalHangBoard.FCStd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../esp32/digitalHangBoard/digitalHangBoard.ino" beforeDir="false" afterPath="$PROJECT_DIR$/../esp32/digitalHangBoard/digitalHangBoard.ino" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/InitHelper.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/BrowserOnlyInit.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/NoSSRWrapper.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/NoSSRWrapper.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/BrowserOnlyInit.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/BrowserOnlyInit.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,6 +44,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/jameshunt/IdeaProjects/digitalHangBoard/web/src/bluetooth&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -60,6 +55,9 @@
   }
 }</component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/bluetooth" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/hooks" />
       <recent name="$PROJECT_DIR$/src/components" />
@@ -76,7 +74,8 @@
       <updated>1699727804085</updated>
       <workItem from="1699727805122" duration="3511000" />
       <workItem from="1699926909987" duration="25453000" />
-      <workItem from="1700433824948" duration="4693000" />
+      <workItem from="1700433824948" duration="16187000" />
+      <workItem from="1700553046601" duration="8272000" />
     </task>
     <task id="LOCAL-00001" summary="postMessage hook">
       <option name="closed" value="true" />
@@ -110,7 +109,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/components/BrowserOnlyInit.tsx</url>
-          <line>17</line>
+          <line>19</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>

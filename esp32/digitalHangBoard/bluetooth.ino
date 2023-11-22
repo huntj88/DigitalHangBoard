@@ -1,21 +1,22 @@
 #include <BLEDevice.h>
 #include <BLEServer.h>
 #include <BLEUtils.h>
+#include <BLE2902.h>
 
 #define bleServerName "Digital Hangboard"
-#define SERVICE_UUID "4e035799-bfff-47dd-a531-4ada55e703eb"
+#define SERVICE_UUID "4e035799-bfff-47dd-a531-4ada55e703ec"
 
-BLECharacteristic scale0Characteristics("32c01a15-b46f-4922-afd2-12f6afbec821", BLECharacteristic::PROPERTY_NOTIFY);
-BLEDescriptor scale0Descriptor("09d737ac-d325-4a11-8ddc-4986189b82e0");
+BLECharacteristic scale0Characteristics("6766fbea-844a-459a-8def-643852f016b8", BLECharacteristic::PROPERTY_NOTIFY);
+BLE2902 scale0CCC;
 
 BLECharacteristic scale1Characteristics("3f19be02-a46f-4ea7-851b-1c2b891cf63e", BLECharacteristic::PROPERTY_NOTIFY);
-BLEDescriptor scale1Descriptor("801ae050-324c-40c3-a83f-38136926154c");
+BLE2902 scale1CCC;
 
 BLECharacteristic scale2Characteristics("d064d929-1cf3-42df-abe9-b5e8a9e0e2bd", BLECharacteristic::PROPERTY_NOTIFY);
-BLEDescriptor scale2Descriptor("1c3a7208-5d76-4845-90b0-a89a634bc7f7");
+BLE2902 scale2CCC;
 
 BLECharacteristic scale3Characteristics("15c40fb5-0311-465a-a77c-c42a8282e7cf", BLECharacteristic::PROPERTY_NOTIFY);
-BLEDescriptor scale3Descriptor("43415018-8202-44c7-bee4-2878e9dcb7af");
+BLE2902 scale3CCC;
 
 class BLEConnectionCallbacks: public BLEServerCallbacks {
   // server stops advertising on connected
@@ -31,7 +32,16 @@ class BLEConnectionCallbacks: public BLEServerCallbacks {
 
 BLEServer *pServer;
 
+void setupTestingMacAddress() {
+  // appears as a new device, so cache on client doesn't matter
+  uint8_t base_mac_addr[8] = {0x01, 0x08, 0x07, 0x04, 0x05, 0x06};
+  base_mac_addr[0] &= ~0x01; // make unicast
+  base_mac_addr[0] |= 0x02; // mark as locally administered
+  Serial.println(esp_base_mac_addr_set(base_mac_addr));
+}
+
 void setupBluetoothServer() {
+  setupTestingMacAddress();
   BLEDevice::init(bleServerName);
 
   pServer = BLEDevice::createServer();
@@ -39,21 +49,21 @@ void setupBluetoothServer() {
 
   BLEService *dhbService = pServer->createService(SERVICE_UUID);
 
+  scale0CCC.setNotifications(true);
+  scale0Characteristics.addDescriptor(&scale0CCC);
   dhbService->addCharacteristic(&scale0Characteristics);
-  scale0Descriptor.setValue("weight");
-  scale0Characteristics.addDescriptor(&scale0Descriptor);
 
+  scale1CCC.setNotifications(true);
+  scale1Characteristics.addDescriptor(&scale1CCC);
   dhbService->addCharacteristic(&scale1Characteristics);
-  scale1Descriptor.setValue("weight");
-  scale1Characteristics.addDescriptor(&scale1Descriptor);
 
+  scale2CCC.setNotifications(true);
+  scale2Characteristics.addDescriptor(&scale2CCC);
   dhbService->addCharacteristic(&scale2Characteristics);
-  scale2Descriptor.setValue("weight");
-  scale2Characteristics.addDescriptor(&scale2Descriptor);
 
+  scale3CCC.setNotifications(true);
+  scale3Characteristics.addDescriptor(&scale3CCC);
   dhbService->addCharacteristic(&scale3Characteristics);
-  scale3Descriptor.setValue("weight");
-  scale3Characteristics.addDescriptor(&scale3Descriptor);
   
   dhbService->start();
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();

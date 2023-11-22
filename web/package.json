@@ -11,6 +11,7 @@
   "dependencies": {
     "@fluentui/react-charting": "^5.19.1",
     "@fluentui/react-components": "^9.40.0",
+    "@types/web-bluetooth": "^0.0.20",
     "eruda": "^3.0.1",
     "next": "14.0.2",
     "react": "^18",
