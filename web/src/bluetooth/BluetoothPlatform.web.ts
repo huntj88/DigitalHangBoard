@@ -40,20 +40,22 @@ export class BluetoothPlatformWeb implements BluetoothPlatform {
     public addCharacteristicIntEventListener(characteristicName: string, onEvent: (event: CharacteristicEventIntData) => void): void {
         const characteristic = this.characteristics![characteristicName]
         const onChanged: (this: BluetoothRemoteGATTCharacteristic, ev: Event) => void = (event: Event) => {
-            const valueDataView = characteristic.value
-            const value = valueDataView?.getInt32(valueDataView.byteOffset)
-            if (value !== undefined) {
-                onEvent({
+            if (this.isCharacteristic(event.currentTarget)) {
+                const byteInfo = event.currentTarget.value;
+                const value = byteInfo?.getInt32(byteInfo.byteOffset)
+                value !== undefined && onEvent({
                     timeStamp: event.timeStamp,
                     value
                 });
-            } else {
-                console.warn("undefined value", characteristicName)
             }
         }
+        characteristic.addEventListener("characteristicvaluechanged", onChanged)
         characteristic.startNotifications().then((characteristic) => {
-            characteristic.addEventListener("characteristicvaluechanged", onChanged)
             console.log("startNotifications: ", characteristic)
         })
+    }
+
+    private isCharacteristic(value: any): value is BluetoothRemoteGATTCharacteristic {
+        return value.value !== undefined && value.uuid != undefined
     }
 }
