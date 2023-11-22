@@ -34,10 +34,13 @@ void setup() {
 }
 
 void loop() {
-  sendWeightValue(0, readScale(scale0));
-  sendWeightValue(1, readScale(scale1));
-  sendWeightValue(2, readScale(scale2));
-  sendWeightValue(3, readScale(scale3));
+  if (isBluetoothClientConnected()) {
+    Serial.println("reading weights");
+    sendWeightValue(0, readScale(scale0));
+    sendWeightValue(1, readScale(scale1));
+    sendWeightValue(2, readScale(scale2));
+    sendWeightValue(3, readScale(scale3));
+  }
 
   delay(1000);
 }

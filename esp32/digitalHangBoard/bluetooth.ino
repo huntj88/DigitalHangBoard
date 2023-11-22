@@ -18,6 +18,8 @@ BLE2902 scale2CCC;
 BLECharacteristic scale3Characteristics("15c40fb5-0311-465a-a77c-c42a8282e7cf", BLECharacteristic::PROPERTY_NOTIFY);
 BLE2902 scale3CCC;
 
+BLEServer *pServer;
+
 class BLEConnectionCallbacks: public BLEServerCallbacks {
   // server stops advertising on connected
   void onConnect(BLEServer* pServer) {
@@ -29,8 +31,6 @@ class BLEConnectionCallbacks: public BLEServerCallbacks {
     pServer->startAdvertising();
   }
 };
-
-BLEServer *pServer;
 
 void setupTestingMacAddress() {
   // appears as a new device, so cache on client doesn't matter
@@ -70,6 +70,10 @@ void setupBluetoothServer() {
   pAdvertising->addServiceUUID(SERVICE_UUID);
   pServer->getAdvertising()->start();
   Serial.println("Bluetooth Started! Ready to pair...");
+}
+
+bool isBluetoothClientConnected() {
+  return pServer->getConnectedCount() > 0;
 }
 
 void sendWeightValue(int index, int value) {
