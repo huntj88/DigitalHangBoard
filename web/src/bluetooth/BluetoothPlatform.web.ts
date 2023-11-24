@@ -1,30 +1,24 @@
 type Characteristics = { [key: string]: BluetoothRemoteGATTCharacteristic }
 
 export class BluetoothPlatformWeb implements BluetoothPlatform {
-    private service = "4e035799-bfff-47dd-a531-4ada55e703ec";
-    private scale0 = "6766fbea-844a-459a-8def-643852f016b8";
-    private scale1 = "3f19be02-a46f-4ea7-851b-1c2b891cf63e";
-    private scale2 = "d064d929-1cf3-42df-abe9-b5e8a9e0e2bd";
-    private scale3 = "15c40fb5-0311-465a-a77c-c42a8282e7cf";
-
     private characteristics: Characteristics | undefined = undefined;
 
     public connect(): Promise<void> {
         return navigator.bluetooth
-            .requestDevice({filters: [{services: [this.service]}]})
+            .requestDevice({filters: [{services: [service]}]})
             .then(device => device.gatt?.connect())
             .then(server => {
                 if (!server) {
                     return Promise.reject("server undefined")
                 }
-                return server.getPrimaryService(this.service);
+                return server.getPrimaryService(service);
             })
             .then(service => {
                 return Promise.all([
-                    service.getCharacteristic(this.scale0),
-                    service.getCharacteristic(this.scale1),
-                    service.getCharacteristic(this.scale2),
-                    service.getCharacteristic(this.scale3)
+                    service.getCharacteristic(scale0),
+                    service.getCharacteristic(scale1),
+                    service.getCharacteristic(scale2),
+                    service.getCharacteristic(scale3)
                 ])
             })
             .then(characteristics => {
@@ -44,7 +38,7 @@ export class BluetoothPlatformWeb implements BluetoothPlatform {
                 const byteInfo = event.currentTarget.value;
                 const value = byteInfo?.getInt32(byteInfo.byteOffset)
                 value !== undefined && onEvent({
-                    timeStamp: event.timeStamp,
+                    date: new Date(event.timeStamp),
                     value
                 });
             }
