@@ -5,14 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e227357a-ebd1-4a07-aa9d-3aba2a036ff2" name="Changes" comment="cleanup">
-      <change afterPath="$PROJECT_DIR$/src/bluetooth/BluetoothManager.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/bluetooth/BluetoothProvider.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/BluetoothConnect.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../cad/digitalHangBoard.FCStd" beforeDir="false" afterPath="$PROJECT_DIR$/../cad/digitalHangBoard.FCStd" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../esp32/digitalHangBoard/bluetooth.ino" beforeDir="false" afterPath="$PROJECT_DIR$/../esp32/digitalHangBoard/bluetooth.ino" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/providers.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/providers.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bluetooth/BluetoothManager.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/bluetooth/BluetoothManager.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bluetooth/BluetoothPlatform.interface.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/bluetooth/BluetoothPlatform.interface.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bluetooth/BluetoothPlatform.web.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/bluetooth/BluetoothPlatform.web.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/BrowserOnlyInit.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/BrowserOnlyInit.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,7 +87,7 @@
       <workItem from="1699926909987" duration="25453000" />
       <workItem from="1700433824948" duration="16187000" />
       <workItem from="1700553046601" duration="13977000" />
-      <workItem from="1700796597651" duration="3400000" />
+      <workItem from="1700796597651" duration="7650000" />
     </task>
     <task id="LOCAL-00001" summary="postMessage hook">
       <option name="closed" value="true" />

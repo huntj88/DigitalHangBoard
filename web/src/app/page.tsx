@@ -17,6 +17,7 @@ import {SwitchOnChangeData} from "@fluentui/react-switch";
 import {AreaChart} from "@fluentui/react-charting";
 import {chartData} from "@/app/sampleData";
 import {CheckmarkStarburst16Filled} from "@fluentui/react-icons";
+import {BluetoothConnect} from "@/components/BluetoothConnect";
 
 // Create a custom 'useStyles' hook to define the styling for the Home component.
 const useStyles = makeStyles({
@@ -123,47 +124,48 @@ export default function Home() {
     // Render the Home component with a Title1 and Text component from Fluent UI.
     return (
         <main className={styles.container}>
-            <div className={styles.settings}>
-                <Switch
-                    label={toggleLabel}
-                    checked={theme === "light"}
-                    onChange={handleToggleChange}
-                    className={styles.toggleButton}
-                />
-                <span className={styles.toggleIcon}>{toggleIcon}</span>
-            </div>
-            <Card className={styles.card}>
-                <header className={mergeClasses(styles.flex, styles.labels)}>
-                    <Text as="h1" className={styles.title}>
-                        Favorite Actors
-                    </Text>
-                </header>
+            <BluetoothConnect/>
+            {/*<div className={styles.settings}>*/}
+            {/*    <Switch*/}
+            {/*        label={toggleLabel}*/}
+            {/*        checked={theme === "light"}*/}
+            {/*        onChange={handleToggleChange}*/}
+            {/*        className={styles.toggleButton}*/}
+            {/*    />*/}
+            {/*    <span className={styles.toggleIcon}>{toggleIcon}</span>*/}
+            {/*</div>*/}
+            {/*<Card className={styles.card}>*/}
+            {/*    <header className={mergeClasses(styles.flex, styles.labels)}>*/}
+            {/*        <Text as="h1" className={styles.title}>*/}
+            {/*            Favorite Actors*/}
+            {/*        </Text>*/}
+            {/*    </header>*/}
 
-                {actorsData.map((actor, index) => (
-                    <div key={index}>
-                        <div className={styles.row}>
-                            <Avatar
-                                name={actor.name}
-                                badge={{
-                                    icon: <CheckmarkStarburst16Filled className={styles.svg}/>,
-                                }}
-                            />
-                            <div className={styles.column}>
-                                <Text className={styles.label}>{actor.name}</Text>
-                                <Text className={styles.caption}>{actor.description}</Text>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </Card>
-            <div className={styles.graph}>
-                <AreaChart
-                    culture={window.navigator.language}
-                    data={chartData}
-                    enablePerfOptimization={false}
-                    enableReflow={true}
-                />
-            </div>
+            {/*    {actorsData.map((actor, index) => (*/}
+            {/*        <div key={index}>*/}
+            {/*            <div className={styles.row}>*/}
+            {/*                <Avatar*/}
+            {/*                    name={actor.name}*/}
+            {/*                    badge={{*/}
+            {/*                        icon: <CheckmarkStarburst16Filled className={styles.svg}/>,*/}
+            {/*                    }}*/}
+            {/*                />*/}
+            {/*                <div className={styles.column}>*/}
+            {/*                    <Text className={styles.label}>{actor.name}</Text>*/}
+            {/*                    <Text className={styles.caption}>{actor.description}</Text>*/}
+            {/*                </div>*/}
+            {/*            </div>*/}
+            {/*        </div>*/}
+            {/*    ))}*/}
+            {/*</Card>*/}
+            {/*<div className={styles.graph}>*/}
+            {/*    <AreaChart*/}
+            {/*        culture={window.navigator.language}*/}
+            {/*        data={chartData}*/}
+            {/*        enablePerfOptimization={false}*/}
+            {/*        enableReflow={true}*/}
+            {/*    />*/}
+            {/*</div>*/}
         </main>
     );
 }

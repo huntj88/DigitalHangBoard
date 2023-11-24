@@ -6,7 +6,7 @@ import {usePostMessaging} from "@/app/usePostMessaging";
 import {BluetoothPlatformWeb} from "@/bluetooth/BluetoothPlatform.web";
 
 export default function BrowserOnlyInit() {
-    const bluetooth = new BluetoothPlatformWeb();
+    // const bluetooth = new BluetoothPlatformWeb();
     useEffect(() => {
         eruda.init()
     }, [])
@@ -20,17 +20,17 @@ export default function BrowserOnlyInit() {
 
     return (
         <>
-            <button onClick={() => {
-                // postMessage("blah")
-                bluetooth.connect()
-            }}> Connect
-            </button>
-            <button onClick={() => {
-                bluetooth.addCharacteristicIntEventListener("scale0", (event) => {
-                    console.log(event);
-                })
-            }}> listen
-            </button>
+            {/*<button onClick={() => {*/}
+            {/*    // postMessage("blah")*/}
+            {/*    bluetooth.connect()*/}
+            {/*}}> Connect*/}
+            {/*</button>*/}
+            {/*<button onClick={() => {*/}
+            {/*    bluetooth.addCharacteristicIntEventListener("scale0", (event) => {*/}
+            {/*        console.log(event);*/}
+            {/*    })*/}
+            {/*}}> listen*/}
+            {/*</button>*/}
         </>
     )
 }

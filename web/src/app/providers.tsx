@@ -12,6 +12,8 @@ import {
     makeStyles,
     tokens,
 } from "@fluentui/react-components";
+import {BluetoothConnect} from "@/components/BluetoothConnect";
+import {BluetoothProvider} from "@/bluetooth/BluetoothProvider";
 
 // Create a DOM renderer for Fluent UI.
 const renderer = createDOMRenderer();
@@ -43,7 +45,11 @@ export function Providers({children}: ChildrenProp) {
         <ThemeProvider>
             <RendererProvider renderer={renderer}>
                 <SSRProvider>
-                    <WrappedFluentProvider>{children}</WrappedFluentProvider>
+                    <WrappedFluentProvider>
+                        <BluetoothProvider>
+                            {children}
+                        </BluetoothProvider>
+                    </WrappedFluentProvider>
                 </SSRProvider>
             </RendererProvider>
         </ThemeProvider>
