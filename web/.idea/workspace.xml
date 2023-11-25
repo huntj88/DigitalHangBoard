@@ -8,6 +8,8 @@
       <change beforePath="$PROJECT_DIR$/../cad/digitalHangBoard.FCStd" beforeDir="false" afterPath="$PROJECT_DIR$/../cad/digitalHangBoard.FCStd" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../esp32/digitalHangBoard/bluetooth.ino" beforeDir="false" afterPath="$PROJECT_DIR$/../esp32/digitalHangBoard/bluetooth.ino" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bluetooth/BluetoothManager.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/bluetooth/BluetoothManager.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/LiveGraph.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/LiveGraph.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -81,7 +83,7 @@
       <workItem from="1700433824948" duration="16187000" />
       <workItem from="1700553046601" duration="13977000" />
       <workItem from="1700796597651" duration="23952000" />
-      <workItem from="1700879784390" duration="2683000" />
+      <workItem from="1700879784390" duration="8953000" />
     </task>
     <task id="LOCAL-00001" summary="postMessage hook">
       <option name="closed" value="true" />

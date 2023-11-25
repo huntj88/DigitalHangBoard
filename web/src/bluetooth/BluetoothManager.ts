@@ -47,7 +47,7 @@ export class BluetoothManager {
 }
 
 export type ScaleData = {
-    index: number,
+    index?: number,
     value: number,
     date: Date,
 }

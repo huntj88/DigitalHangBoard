@@ -172,3 +172,6 @@ export default function Home() {
         </main>
     );
 }
+
+// default behavior if person started hanging without picking type would be record from first weight to end weight
+// could also choose timed, etc
