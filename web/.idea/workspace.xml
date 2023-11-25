@@ -5,16 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e227357a-ebd1-4a07-aa9d-3aba2a036ff2" name="Changes" comment="cleanup">
-      <change afterPath="$PROJECT_DIR$/src/components/LiveGraph.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../cad/digitalHangBoard.FCStd" beforeDir="false" afterPath="$PROJECT_DIR$/../cad/digitalHangBoard.FCStd" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../esp32/digitalHangBoard/bluetooth.ino" beforeDir="false" afterPath="$PROJECT_DIR$/../esp32/digitalHangBoard/bluetooth.ino" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/sampleData.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bluetooth/BluetoothPlatform.mock.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/bluetooth/BluetoothPlatform.mock.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/SingleScaleGraph.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/LiveGraph.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/LiveGraph.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,6 +81,7 @@
       <workItem from="1700433824948" duration="16187000" />
       <workItem from="1700553046601" duration="13977000" />
       <workItem from="1700796597651" duration="23952000" />
+      <workItem from="1700879784390" duration="2683000" />
     </task>
     <task id="LOCAL-00001" summary="postMessage hook">
       <option name="closed" value="true" />

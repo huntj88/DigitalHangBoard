@@ -44,6 +44,11 @@ export const options: (minX: number, maxY: number) => ChartOptions<"line"> = (mi
                 text: 'Force/Time',
             },
         },
+        animations: {
+            y: {
+                duration: 0
+            }
+        },
         scales: {
             y: {
                 min: 0,
