@@ -1,6 +1,7 @@
 import {BluetoothPlatformWeb} from "@/bluetooth/BluetoothPlatform.web";
 import {BehaviorSubject, filter, Observable, Subject} from "rxjs";
 import {BluetoothPlatform, CharacteristicEventIntData} from "@/bluetooth/BluetoothPlatform.interface";
+import {BluetoothPlatformMock} from "@/bluetooth/BluetoothPlatform.mock";
 
 export class BluetoothManager {
     private platform = this.getPlatformImplementation()
@@ -23,7 +24,7 @@ export class BluetoothManager {
     }
 
     public getScaleObservable(index?: number): Observable<ScaleData> {
-        if (index) {
+        if (index !== undefined) {
             return this.scaleSubject.asObservable().pipe(filter(event => event.index === index))
         } else {
             return this.scaleSubject.asObservable()
@@ -40,11 +41,12 @@ export class BluetoothManager {
     }
 
     private getPlatformImplementation(): BluetoothPlatform {
-        return new BluetoothPlatformWeb()
+        // return new BluetoothPlatformWeb()
+        return new BluetoothPlatformMock()
     }
 }
 
-type ScaleData = {
+export type ScaleData = {
     index: number,
     value: number,
     date: Date,

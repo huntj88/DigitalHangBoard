@@ -12,9 +12,13 @@
     "@fluentui/react-charting": "^5.19.1",
     "@fluentui/react-components": "^9.40.0",
     "@types/web-bluetooth": "^0.0.20",
+    "chart.js": "^4.4.0",
+    "chartjs-adapter-dayjs-4": "^1.0.4",
+    "dayjs": "^1.11.10",
     "eruda": "^3.0.1",
     "next": "14.0.2",
     "react": "^18",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
     "rxjs": "^7.8.1"
   },

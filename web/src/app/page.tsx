@@ -18,6 +18,8 @@ import {AreaChart} from "@fluentui/react-charting";
 import {chartData} from "@/app/sampleData";
 import {CheckmarkStarburst16Filled} from "@fluentui/react-icons";
 import {BluetoothConnect} from "@/components/BluetoothConnect";
+import {useBluetoothContext} from "@/bluetooth/BluetoothProvider";
+import {SingleScaleGraph} from "@/components/SingleScaleGraph";
 
 // Create a custom 'useStyles' hook to define the styling for the Home component.
 const useStyles = makeStyles({
@@ -121,10 +123,13 @@ export default function Home() {
         },
     ];
 
+    const {isConnected} = useBluetoothContext()
+
     // Render the Home component with a Title1 and Text component from Fluent UI.
     return (
         <main className={styles.container}>
-            <BluetoothConnect/>
+            {isConnected ? <SingleScaleGraph/> : <BluetoothConnect/>}
+
             {/*<div className={styles.settings}>*/}
             {/*    <Switch*/}
             {/*        label={toggleLabel}*/}
