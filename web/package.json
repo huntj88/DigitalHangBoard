@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@fluentui/react-charting": "^5.19.1",
     "@fluentui/react-components": "^9.40.0",
     "@types/web-bluetooth": "^0.0.20",
     "chart.js": "^4.4.0",

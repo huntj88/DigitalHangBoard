@@ -21,10 +21,10 @@ export class BluetoothPlatformMock implements BluetoothPlatform {
     public addCharacteristicIntEventListener(characteristicName: string, onEvent: (event: CharacteristicEventIntData) => void): void {
         let previous = 50
         setInterval(() => {
-            const newValue = generateRandom(previous - 10, previous + 10)
+            const newValue = generateRandom(Math.max(0,previous - 10), Math.min(400, previous + 10))
             onEvent({date: new Date(), value: newValue})
             previous = newValue
-        }, 150)
+        }, 250)
         // TODO: report from mock json
     }
 }

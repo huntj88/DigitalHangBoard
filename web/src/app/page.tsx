@@ -14,12 +14,10 @@ import {
 import {useThemeContext} from "./ThemeProvider";
 import React, {ChangeEvent} from "react";
 import {SwitchOnChangeData} from "@fluentui/react-switch";
-import {AreaChart} from "@fluentui/react-charting";
-import {chartData} from "@/app/sampleData";
 import {CheckmarkStarburst16Filled} from "@fluentui/react-icons";
 import {BluetoothConnect} from "@/components/BluetoothConnect";
 import {useBluetoothContext} from "@/bluetooth/BluetoothProvider";
-import {SingleScaleGraph} from "@/components/SingleScaleGraph";
+import {LiveGraph} from "@/components/LiveGraph";
 
 // Create a custom 'useStyles' hook to define the styling for the Home component.
 const useStyles = makeStyles({
@@ -128,7 +126,7 @@ export default function Home() {
     // Render the Home component with a Title1 and Text component from Fluent UI.
     return (
         <main className={styles.container}>
-            {isConnected ? <SingleScaleGraph/> : <BluetoothConnect/>}
+            {isConnected ? <LiveGraph/> : <BluetoothConnect/>}
 
             {/*<div className={styles.settings}>*/}
             {/*    <Switch*/}
