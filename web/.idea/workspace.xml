@@ -5,11 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e227357a-ebd1-4a07-aa9d-3aba2a036ff2" name="Changes" comment="cleanup">
+      <change afterPath="$PROJECT_DIR$/src/app/nav/connected/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/nav/layout.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/nav/local/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/nav/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../cad/digitalHangBoard.FCStd" beforeDir="false" afterPath="$PROJECT_DIR$/../cad/digitalHangBoard.FCStd" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../esp32/digitalHangBoard/bluetooth.ino" beforeDir="false" afterPath="$PROJECT_DIR$/../esp32/digitalHangBoard/bluetooth.ino" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bluetooth/BluetoothManager.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/bluetooth/BluetoothManager.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/LiveGraph.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/LiveGraph.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -44,30 +48,35 @@
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/jameshunt/IdeaProjects/digitalHangBoard/web/src/bluetooth&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_interpreter_path&quot;: &quot;/home/jameshunt/.nvm/versions/node/v20.9.0/bin/node&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/home/jameshunt/IdeaProjects/digitalHangBoard/web/node_modules/typescript/lib&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "/home/jameshunt/IdeaProjects/digitalHangBoard/web/src/app/nav/connected",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_interpreter_path": "/home/jameshunt/.nvm/versions/node/v20.9.0/bin/node",
+    "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "/home/jameshunt/IdeaProjects/digitalHangBoard/web/node_modules/typescript/lib"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/app/nav/connected" />
+      <recent name="$PROJECT_DIR$/src/app/root" />
+      <recent name="$PROJECT_DIR$/src/app" />
       <recent name="$PROJECT_DIR$/src/bluetooth" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/app/nav" />
+      <recent name="$PROJECT_DIR$/src/app/root" />
+      <recent name="$PROJECT_DIR$/src/app/local" />
       <recent name="$PROJECT_DIR$/src/hooks" />
       <recent name="$PROJECT_DIR$/src/components" />
-      <recent name="$PROJECT_DIR$/src" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -83,7 +92,7 @@
       <workItem from="1700433824948" duration="16187000" />
       <workItem from="1700553046601" duration="13977000" />
       <workItem from="1700796597651" duration="23952000" />
-      <workItem from="1700879784390" duration="8953000" />
+      <workItem from="1700879784390" duration="20356000" />
     </task>
     <task id="LOCAL-00001" summary="postMessage hook">
       <option name="closed" value="true" />

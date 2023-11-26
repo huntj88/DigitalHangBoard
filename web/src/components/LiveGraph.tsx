@@ -1,3 +1,5 @@
+"use client"
+
 import {makeStyles} from "@fluentui/react-components";
 import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm';
 
