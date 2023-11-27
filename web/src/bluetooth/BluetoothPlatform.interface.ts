@@ -1,12 +1,15 @@
 export interface BluetoothPlatform {
-    connect(): Promise<void>
+  connect(): Promise<void>;
 
-    addCharacteristicIntEventListener(characteristic: string, onEvent: (event: CharacteristicEventIntData) => void): void
+  addCharacteristicIntEventListener(
+    characteristic: string,
+    onEvent: (event: CharacteristicEventIntData) => void,
+  ): void;
 
-    onConnectionChanged(onChanged: (isConnected: boolean) => void): void
+  onConnectionChanged(onChanged: (isConnected: boolean) => void): void;
 }
 
-export type CharacteristicEventIntData = { date: Date, value: number }
+export type CharacteristicEventIntData = { date: Date; value: number };
 
 export const serviceId = "4e035799-bfff-47dd-a531-4ada55e703ec";
 export const scale0 = "6766fbea-844a-459a-8def-643852f016b8";
