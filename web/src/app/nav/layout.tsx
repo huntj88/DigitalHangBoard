@@ -18,6 +18,7 @@ import {
 import type { SelectTabData, SelectTabEvent } from "@fluentui/react-components";
 import { ReactElement, ReactNode } from "react";
 import Link from "next/link";
+import { usePathname } from "next/dist/client/components/navigation";
 
 const AddSquare = bundleIcon(AddSquareFilled, AddSquareRegular);
 const Person = bundleIcon(PersonFilled, PersonRegular);
@@ -43,9 +44,14 @@ type ChildrenProp = {
 };
 
 export default function NavLayout({ children }: ChildrenProp): ReactElement {
-  const styles = useStyles();
+  const path = usePathname()
+  let selectedInit = "local"
+  if (path.includes("connected")) {
+    selectedInit = "connected"
+  }
 
-  const [selectedValue, setSelectedValue] = React.useState<TabValue>("local");
+  const styles = useStyles();
+  const [selectedValue, setSelectedValue] = React.useState<TabValue>(selectedInit);
 
   const onTabSelect = (event: SelectTabEvent, data: SelectTabData) => {
     setSelectedValue(data.value);
