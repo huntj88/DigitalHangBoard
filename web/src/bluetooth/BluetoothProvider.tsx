@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import { BluetoothManager } from "@/bluetooth/BluetoothManager";
+import { ChildrenProp } from "@/components/util";
 
 const BluetoothContext = createContext<{
   bluetoothManager: BluetoothManager;
@@ -17,9 +18,6 @@ const BluetoothContext = createContext<{
   bluetoothManager: new BluetoothManager(),
   isConnected: false,
 });
-type ChildrenProp = {
-  children: ReactNode;
-};
 
 export const BluetoothProvider = ({ children }: ChildrenProp) => {
   const bluetoothManager = useMemo(() => new BluetoothManager(), []);

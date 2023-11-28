@@ -19,6 +19,7 @@ import type { SelectTabData, SelectTabEvent } from "@fluentui/react-components";
 import { ReactElement, ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/dist/client/components/navigation";
+import { ChildrenProp } from "@/components/util";
 
 const AddSquare = bundleIcon(AddSquareFilled, AddSquareRegular);
 const Person = bundleIcon(PersonFilled, PersonRegular);
@@ -38,10 +39,6 @@ const useStyles = makeStyles({
     rowGap: "20px"
   }
 });
-
-type ChildrenProp = {
-  children: ReactNode;
-};
 
 export default function NavLayout({ children }: ChildrenProp): ReactElement {
   const path = usePathname()

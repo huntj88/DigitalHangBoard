@@ -10,23 +10,21 @@ import {
   webLightTheme,
   webDarkTheme,
   makeStyles,
-  tokens,
+  tokens
 } from "@fluentui/react-components";
 import { BluetoothConnect } from "@/components/BluetoothConnect";
 import { BluetoothProvider } from "@/bluetooth/BluetoothProvider";
+import { SessionProvider } from "@/session/SessionProvider";
+import { ChildrenProp } from "@/components/util";
 
 // Create a DOM renderer for Fluent UI.
 const renderer = createDOMRenderer();
 
 const useStyles = makeStyles({
   root: {
-    backgroundColor: tokens.colorBrandBackground2,
-  },
+    backgroundColor: tokens.colorBrandBackground2
+  }
 });
-
-type ChildrenProp = {
-  children: ReactNode;
-};
 
 export function Providers({ children }: ChildrenProp) {
   // Declare a state variable named 'hasMounted' and a function named 'setHasMounted' to update it.
@@ -46,7 +44,11 @@ export function Providers({ children }: ChildrenProp) {
       <RendererProvider renderer={renderer}>
         <SSRProvider>
           <WrappedFluentProvider>
-            <BluetoothProvider>{children}</BluetoothProvider>
+            <BluetoothProvider>
+              <SessionProvider>
+                {children}
+              </SessionProvider>
+            </BluetoothProvider>
           </WrappedFluentProvider>
         </SSRProvider>
       </RendererProvider>

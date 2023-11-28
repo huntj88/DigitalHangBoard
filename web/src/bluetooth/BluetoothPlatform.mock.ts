@@ -24,11 +24,11 @@ export class BluetoothPlatformMock implements BluetoothPlatform {
     characteristicName: string,
     onEvent: (event: CharacteristicEventIntData) => void,
   ): void {
-    let previous = 50;
+    let previous = 5;
     setInterval(() => {
       const newValue = generateRandom(
         Math.max(0, previous - 10),
-        Math.min(400, previous + 10),
+        Math.min(30, previous + 3),
       );
       onEvent({ date: new Date(), value: newValue });
       previous = newValue;
