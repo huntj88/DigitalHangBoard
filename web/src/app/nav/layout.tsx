@@ -6,18 +6,18 @@ import {
   Tab,
   TabList,
   Divider,
-  TabValue,
+  TabValue
 } from "@fluentui/react-components";
 import {
   bundleIcon,
   AddSquareRegular,
   AddSquareFilled,
   PersonFilled,
-  PersonRegular,
+  PersonRegular
 } from "@fluentui/react-icons";
 import type { SelectTabData, SelectTabEvent } from "@fluentui/react-components";
-import { useRouter } from "next/navigation";
 import { ReactElement, ReactNode } from "react";
+import Link from "next/link";
 
 const AddSquare = bundleIcon(AddSquareFilled, AddSquareRegular);
 const Person = bundleIcon(PersonFilled, PersonRegular);
@@ -27,46 +27,44 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   children: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    rowGap: "20px",
-  },
+    rowGap: "20px"
+  }
 });
 
-export default function NavLayout({
-  children,
-}: {
+type ChildrenProp = {
   children: ReactNode;
-}): ReactElement {
-  const router = useRouter();
+};
+
+export default function NavLayout({ children }: ChildrenProp): ReactElement {
   const styles = useStyles();
 
   const [selectedValue, setSelectedValue] = React.useState<TabValue>("local");
 
   const onTabSelect = (event: SelectTabEvent, data: SelectTabData) => {
     setSelectedValue(data.value);
-    if (data.value === "local") {
-      router.push("/nav/local");
-    } else if (data.value === "connected") {
-      router.push("/nav/connected");
-    }
   };
 
   return (
     <>
       <div className={styles.nav}>
         <TabList selectedValue={selectedValue} onTabSelect={onTabSelect}>
-          <Tab id="Local" icon={<AddSquare />} value="local">
-            Local
-          </Tab>
-          <Tab id="Connected" icon={<Person />} value="connected">
-            Connected
-          </Tab>
+          <Link href={"/nav/local"}>
+            <Tab id="Local" icon={<AddSquare />} value="local">
+              Local
+            </Tab>
+          </Link>
+          <Link href={"/nav/connected"}>
+            <Tab id="Connected" icon={<Person />} value="connected">
+              Connected
+            </Tab>
+          </Link>
         </TabList>
         <Divider />
       </div>

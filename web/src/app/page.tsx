@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 
-export default function Nav() {
+export default function Loading() {
   const router = useRouter();
-  router.push("/nav/local");
-  return <div></div>;
+  router.replace("/nav/local")
+  return <div>Loading</div>;
 }
