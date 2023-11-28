@@ -1,6 +1,6 @@
 "use client";
 
-import { setupPostMessaging } from "@/app/jsBridge";
+import { setupPostMessaging } from "@/bluetooth/postmessage/postmessage";
 import { useEffect, useState } from "react";
 
 export function usePostMessaging(onMessage: (message: any) => void) {

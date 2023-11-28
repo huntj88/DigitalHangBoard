@@ -2,15 +2,14 @@
 
 import eruda from "eruda";
 import { useCallback, useEffect } from "react";
-import { usePostMessaging } from "@/app/usePostMessaging";
-import { BluetoothPlatformWeb } from "@/bluetooth/BluetoothPlatform.web";
+import { usePostMessaging } from "@/bluetooth/postmessage/usePostMessaging";
 
 export default function BrowserOnlyInit() {
-  // const bluetooth = new BluetoothPlatformWeb();
   useEffect(() => {
     eruda.init();
   }, []);
 
+  // TODO: post messaging should be setup in bluetooth manager/provider?
   const onMessage = useCallback((message: any) => {
     console.log("onMessage", message);
   }, []);
@@ -19,18 +18,6 @@ export default function BrowserOnlyInit() {
   console.log("postMessage", postMessage);
 
   return (
-    <>
-      {/*<button onClick={() => {*/}
-      {/*    // postMessage("blah")*/}
-      {/*    bluetooth.connect()*/}
-      {/*}}> Connect*/}
-      {/*</button>*/}
-      {/*<button onClick={() => {*/}
-      {/*    bluetooth.addCharacteristicIntEventListener("scale0", (event) => {*/}
-      {/*        console.log(event);*/}
-      {/*    })*/}
-      {/*}}> listen*/}
-      {/*</button>*/}
-    </>
+    <></>
   );
 }
