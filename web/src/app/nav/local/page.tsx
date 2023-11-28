@@ -5,6 +5,7 @@ import React from "react";
 import { BluetoothConnect } from "@/components/BluetoothConnect";
 import { useBluetoothContext } from "@/bluetooth/BluetoothProvider";
 import { LiveGraph } from "@/components/LiveGraph";
+import { SessionGraphWrapper } from "@/components/SessionGraph";
 
 // Create a custom 'useStyles' hook to define the styling for the Home component.
 const useStyles = makeStyles({
@@ -26,6 +27,7 @@ export default function LocalPage() {
   return (
     <main className={styles.container}>
       {isConnected ? <LiveGraph /> : <BluetoothConnect />}
+      {isConnected && <SessionGraphWrapper />}
     </main>
   );
 }

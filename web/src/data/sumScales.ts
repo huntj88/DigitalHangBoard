@@ -1,11 +1,10 @@
 import { bufferTime, filter, map, Observable } from "rxjs";
-import { ScaleData } from "@/bluetooth/BluetoothManager";
+import { ScaleAverageData, ScaleData } from "@/bluetooth/BluetoothManager";
+import { bufferScales } from "@/data/bufferScales";
 
-export const sumScales = (dataFromAllScales: Observable<ScaleData>) =>
-  dataFromAllScales.pipe(
-    // todo: buffer until one of each scale instead
-    bufferTime(50),
-    filter((x) => x.length >= 4),
+export function sumScales(dataFromAllScales: Observable<ScaleData>): Observable<ScaleAverageData> {
+  return dataFromAllScales.pipe(
+    bufferScales(),
     map((buffered) => {
       const average = (array: number[]) =>
         array.reduce((a, b) => a + b) / array.length;
@@ -24,7 +23,9 @@ export const sumScales = (dataFromAllScales: Observable<ScaleData>) =>
       const scaleTotal = scale0 + scale1 + scale2 + scale3;
       return {
         value: scaleTotal,
-        date: buffered[0]?.date, // todo: average time?
+        earlierMeasurement: buffered[0].date,
+        latestMeasurement: buffered[buffered.length - 1].date
       };
     }),
   );
+}

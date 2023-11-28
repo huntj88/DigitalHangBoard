@@ -28,7 +28,7 @@ export class BluetoothPlatformMock implements BluetoothPlatform {
     setInterval(() => {
       const newValue = generateRandom(
         Math.max(0, previous - 10),
-        Math.min(30, previous + 3),
+        Math.min(30, previous + 2),
       );
       onEvent({ date: new Date(), value: newValue });
       previous = newValue;

@@ -129,8 +129,9 @@ export const LiveGraph = () => {
             // only keep visible data, remove oldest
             xyDataRef.current.shift()
           }
-          xyDataRef.current.push({ x: data.date.getTime(), y: data.value })
-          minXRef.current = data.date.getTime() - 2000
+          // TODO: time range, not just earliest
+          xyDataRef.current.push({ x: data.earlierMeasurement.getTime(), y: data.value })
+          minXRef.current = data.earlierMeasurement.getTime() - 2000
           maxYRef.current = Math.max(maxYRef.current, data.value)
           if (lineRef.current) {
             lineRef.current.options = options(minXRef.current, maxYRef.current)

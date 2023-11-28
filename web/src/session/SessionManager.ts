@@ -3,7 +3,7 @@ import { sumScales } from "@/data/sumScales";
 import { Subscription } from "rxjs";
 import { v4 as uuid } from 'uuid';
 
-type Session = {
+export type Session = {
   id: string,
   scaleData: ScaleData[],
   active: boolean

@@ -68,3 +68,9 @@ export type ScaleData = {
   value: number;
   date: Date;
 };
+
+export type ScaleAverageData = {
+  value: number;
+  earlierMeasurement: Date,
+  latestMeasurement: Date
+};
