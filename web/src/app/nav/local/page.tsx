@@ -4,7 +4,7 @@ import { makeStyles, shorthands, tokens } from "@fluentui/react-components";
 import React from "react";
 import { BluetoothConnect } from "@/components/BluetoothConnect";
 import { useBluetoothContext } from "@/bluetooth/BluetoothProvider";
-import { LiveGraph } from "@/components/LiveGraph";
+import { LiveGraphAverage, LiveGraphIndex } from "@/components/LiveGraph";
 import { SessionGraphWrapper } from "@/components/SessionGraph";
 
 // Create a custom 'useStyles' hook to define the styling for the Home component.
@@ -26,7 +26,11 @@ export default function LocalPage() {
 
   return (
     <main className={styles.container}>
-      {isConnected ? <LiveGraph /> : <BluetoothConnect />}
+      {isConnected ? <LiveGraphAverage /> : <BluetoothConnect />}
+      {isConnected && <LiveGraphIndex index={0} />}
+      {isConnected && <LiveGraphIndex index={1} />}
+      {isConnected && <LiveGraphIndex index={2} />}
+      {isConnected && <LiveGraphIndex index={3} />}
       {isConnected && <SessionGraphWrapper />}
     </main>
   );

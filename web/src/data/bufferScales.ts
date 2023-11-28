@@ -17,8 +17,9 @@ export function bufferScales(): OperatorFunction<ScaleData, ScaleData[]>  {
             destination.next(buffer)
             buffer = []
           }
-        }
-        // TODO: error, complete
+        },
+        error: (e) => destination.error(e),
+        complete: () => destination.complete()
       })
     })
 }
