@@ -9,6 +9,7 @@ import {
 import { SessionManager } from "@/session/SessionManager";
 import { useBluetoothContext } from "@/bluetooth/BluetoothProvider";
 import { ChildrenProp } from "@/components/util";
+import { Subscription } from "rxjs";
 
 const SessionContext = createContext<{
   sessionManager: SessionManager
@@ -21,12 +22,11 @@ export const SessionProvider = ({ children }: ChildrenProp) => {
   const sessionManager = useMemo(() => new SessionManager(), []);
 
   useEffect(() => {
+    let subscriptions: Subscription[]
     if (isConnected) {
-      sessionManager.subscribeProvider(bluetoothManager)
-    } else {
-      sessionManager.unsubscribeProvider()
+      subscriptions = sessionManager.subscribeProvider(bluetoothManager)
     }
-    return () => sessionManager.unsubscribeProvider();
+    return () => subscriptions?.forEach((sub) => sub.unsubscribe())
   }, [bluetoothManager, isConnected, sessionManager]);
 
   return (

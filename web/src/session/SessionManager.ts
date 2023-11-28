@@ -10,13 +10,9 @@ type Session = {
 }
 
 export class SessionManager {
-  private subscriptions: Subscription[] = []
   sessions: Session[] = []
 
-  public subscribeProvider(bluetoothManager: BluetoothManager) {
-    if (this.subscriptions.length > 0) {
-      throw new Error("existing subscriptions")
-    }
+  public subscribeProvider(bluetoothManager: BluetoothManager): Subscription[] {
     const scaleDataSubscription = bluetoothManager
       .getScaleObservable()
       .subscribe({
@@ -58,15 +54,13 @@ export class SessionManager {
         complete: () => console.info("SessionManager complete")
       });
 
-    this.subscriptions.push(scaleDataSubscription)
-    this.subscriptions.push(sessionStartSubscription)
-  }
-
-  public unsubscribeProvider() {
-    this.subscriptions.forEach((sub) => sub.unsubscribe())
+    return [scaleDataSubscription, sessionStartSubscription]
   }
 }
 
-// only allow one bluetooth connection,
+// TODO: only allow one bluetooth connection,
 // client could acquire lock on bluetooth device that is not released during an active session
 // would make it easy to associate data with specific device that has lock
+
+// TODO: alternate session start/end configs
+// example: 5 minute session that doesn't reset when no weight
