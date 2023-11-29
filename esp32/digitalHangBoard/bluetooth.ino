@@ -11,6 +11,8 @@
 #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
 #endif
 
+// TODO: use prototype definitions, like in scales.ino, to make this less repetetive
+
 BLECharacteristic scale0Characteristics("6766fbea-844a-459a-8def-643852f016b8", BLECharacteristic::PROPERTY_NOTIFY);
 BLE2902 scale0CCC;
 
