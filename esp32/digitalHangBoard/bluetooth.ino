@@ -6,6 +6,11 @@
 #define bleServerName "Digital Hangboard"
 #define SERVICE_UUID "4e035799-bfff-47dd-a531-4ada55e703ec"
 
+/* Check if Bluetooth configurations are enabled in the SDK */
+#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
+#error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
+#endif
+
 BLECharacteristic scale0Characteristics("6766fbea-844a-459a-8def-643852f016b8", BLECharacteristic::PROPERTY_NOTIFY);
 BLE2902 scale0CCC;
 
@@ -77,6 +82,9 @@ bool isBluetoothClientConnected() {
 }
 
 void sendWeightValue(int index, int value) {
+  Serial.print(index);
+  Serial.print(": ");
+  Serial.println(value);
   if (index == 0) {
     scale0Characteristics.setValue(value);
     scale0Characteristics.notify();

@@ -1,34 +1,28 @@
-#include "HX711.h"
+#include "Wire.h"
+#include <Adafruit_NAU7802.h>
 
-// HX711 circuit wiring
-const int LOADCELL_DOUT_PIN_0 = 16;  // rx pin on my esp32
-const int LOADCELL_SCK_PIN_0 = 17;   // tx pin on my esp32
+#define TCAADDR 0x70
+Adafruit_NAU7802 scale0;
+Adafruit_NAU7802 scale1;
+Adafruit_NAU7802 scale2;
+Adafruit_NAU7802 scale3;
 
-const int LOADCELL_DOUT_PIN_1 = 18;
-const int LOADCELL_SCK_PIN_1 = 19;
-
-const int LOADCELL_DOUT_PIN_2 = 21;
-const int LOADCELL_SCK_PIN_2 = 22;
-
-const int LOADCELL_DOUT_PIN_3 = 23;
-const int LOADCELL_SCK_PIN_3 = 25;
-
-HX711 scale0;  // far left
-HX711 scale1;
-HX711 scale2;
-HX711 scale3;  // far right
-
-/* Check if Bluetooth configurations are enabled in the SDK */
-#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
-#error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
-#endif
+void tcaselect(uint8_t i) {
+  if (i > 7) return;
+ 
+  Wire.beginTransmission(TCAADDR);
+  Wire.write(1 << i);
+  Wire.endTransmission();  
+}
 
 void setup() {
   Serial.begin(115200);
-  scale0.begin(LOADCELL_DOUT_PIN_0, LOADCELL_SCK_PIN_0);
-  scale1.begin(LOADCELL_DOUT_PIN_1, LOADCELL_SCK_PIN_1);
-  scale2.begin(LOADCELL_DOUT_PIN_2, LOADCELL_SCK_PIN_2);
-  scale3.begin(LOADCELL_DOUT_PIN_3, LOADCELL_SCK_PIN_3);
+  Wire.begin();
+
+  setupScale(&scale0, 3);
+  setupScale(&scale1, 4);
+  setupScale(&scale2, 6);
+  setupScale(&scale3, 7);
 
   setupBluetoothServer();
 }
@@ -36,18 +30,47 @@ void setup() {
 void loop() {
   if (isBluetoothClientConnected()) {
     Serial.println("reading weights");
-    sendWeightValue(0, readScale(scale0));
-    sendWeightValue(1, readScale(scale1));
-    sendWeightValue(2, readScale(scale2));
-    sendWeightValue(3, readScale(scale3));
+    sendWeightValue(0, readScale(&scale0, 3));
+    sendWeightValue(1, readScale(&scale1, 4));
+    sendWeightValue(2, readScale(&scale2, 6));
+    sendWeightValue(3, readScale(&scale3, 7));
   }
 
   delay(1000);
 }
 
-int readScale(HX711 scale) {
-  if (scale.is_ready()) {
-    return scale.read_average();
+void setupScale(Adafruit_NAU7802* scale, int multiplexerIndex) {
+  tcaselect(multiplexerIndex);
+  if (!scale->begin()) {
+    Serial.println("Failed to find NAU7802");
+  }
+  scale->setLDO(NAU7802_3V0);
+  scale->setGain(NAU7802_GAIN_128);
+  scale->setRate(NAU7802_RATE_10SPS);
+  for (uint8_t i=0; i<10; i++) {
+    while (!scale->available()) {
+      delay(1);
+    }
+    scale->read();
+  }
+
+  while (!scale->calibrate(NAU7802_CALMOD_INTERNAL)) {
+    Serial.println("Failed to calibrate internal offset, retrying!");
+    delay(1000);
+  }
+  Serial.println("Calibrated internal offset");
+
+  while (!scale->calibrate(NAU7802_CALMOD_OFFSET)) {
+    Serial.println("Failed to calibrate system offset, retrying!");
+    delay(1000);
+  }
+  Serial.println("Calibrated system offset");
+}
+
+int readScale(Adafruit_NAU7802* scale, int multiplexerIndex) {
+  tcaselect(multiplexerIndex);
+  if (scale->available()) {
+    return scale->read();
   } else {
     return -1;
   }
