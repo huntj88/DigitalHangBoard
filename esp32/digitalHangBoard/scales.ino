@@ -27,7 +27,7 @@ void setupScale(Adafruit_NAU7802* scale, int multiplexerIndex) {
   }
   scale->setLDO(NAU7802_3V0);
   scale->setGain(NAU7802_GAIN_128);
-  scale->setRate(NAU7802_RATE_10SPS);
+  scale->setRate(NAU7802_RATE_40SPS);
   for (uint8_t i=0; i<10; i++) {
     while (!scale->available()) {
       delay(1);
@@ -62,7 +62,7 @@ int readScale(Adafruit_NAU7802* scale, int multiplexerIndex) {
   if (scale->available()) {
     return scale->read();
   } else {
-    return -1;
+    return -2147483648; // min int value
   }
 }
 
@@ -78,6 +78,6 @@ int readScale(int index) {
   } else {
     Serial.print("invalid scale:");
     Serial.println(index);
-    return -1;
+    return -2147483648; // min int value
   }
 }

@@ -4,6 +4,8 @@ import { bufferScales } from "@/data/bufferScales";
 
 export function sumScales(dataFromAllScales: Observable<ScaleData>): Observable<ScaleAverageData> {
   return dataFromAllScales.pipe(
+    // bufferTime(200),
+    // filter((x) => x.length >= 4),
     bufferScales(),
     map((buffered) => {
       const average = (array: number[]) =>

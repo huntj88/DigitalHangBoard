@@ -65,7 +65,7 @@ export class BluetoothPlatformWeb implements BluetoothPlatform {
     ) => void = (event: Event) => {
       if (this.isCharacteristic(event.currentTarget)) {
         const byteInfo = event.currentTarget.value;
-        const value = byteInfo?.getInt32(byteInfo.byteOffset);
+        const value = byteInfo?.getInt32(byteInfo.byteOffset, true);
         value !== undefined &&
           onEvent({
             date: new Date(event.timeStamp),

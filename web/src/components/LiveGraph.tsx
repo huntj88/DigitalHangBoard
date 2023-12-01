@@ -23,7 +23,7 @@ import { useBluetoothContext } from "@/bluetooth/BluetoothProvider";
 import { ChartJSOrUndefined } from "react-chartjs-2/dist/types";
 import { sumScales } from "@/data/sumScales";
 import { map, Observable } from "rxjs";
-import { ScaleAverageData, ScaleData } from "@/bluetooth/BluetoothManager";
+import { ScaleData } from "@/bluetooth/BluetoothManager";
 
 ChartJS.register(
   CategoryScale,
@@ -56,11 +56,14 @@ export const options: (minX: number, maxY: number) => ChartOptions<"line"> = (
     animations: {
       y: {
         duration: 0
+      },
+      x: {
+        duration: 0
       }
     },
     scales: {
       y: {
-        min: 0,
+        // min: 0,
         max: maxY + 10
       },
       x: {
@@ -162,7 +165,7 @@ export const LiveGraph = (props: { refs: MutableRefObject<number>, data: Observa
     const subscription = props.data
       .subscribe({
         next: (data) => {
-          if (xyDataRef.current.length > 50) {
+          if (xyDataRef.current.length > 200) {
             // only keep visible data, remove oldest
             xyDataRef.current.shift();
           }

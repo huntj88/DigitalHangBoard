@@ -27,10 +27,10 @@ export default function LocalPage() {
   return (
     <main className={styles.container}>
       {isConnected ? <LiveGraphAverage /> : <BluetoothConnect />}
-      {isConnected && <LiveGraphIndex index={0} />}
-      {isConnected && <LiveGraphIndex index={1} />}
-      {isConnected && <LiveGraphIndex index={2} />}
-      {isConnected && <LiveGraphIndex index={3} />}
+      {/*{isConnected && <LiveGraphIndex index={0} />}*/}
+      {/*{isConnected && <LiveGraphIndex index={1} />}*/}
+      {/*{isConnected && <LiveGraphIndex index={2} />}*/}
+      {/*{isConnected && <LiveGraphIndex index={3} />}*/}
       {isConnected && <SessionGraphWrapper />}
     </main>
   );

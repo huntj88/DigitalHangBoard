@@ -58,8 +58,8 @@ export class BluetoothManager {
   }
 
   private getPlatformImplementation(): BluetoothPlatform {
-    // return new BluetoothPlatformWeb()
-    return new BluetoothPlatformMock();
+    return new BluetoothPlatformWeb()
+    // return new BluetoothPlatformMock();
   }
 }
 

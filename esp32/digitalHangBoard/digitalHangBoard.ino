@@ -6,12 +6,20 @@ void setup() {
 
 void loop() {
   if (isBluetoothClientConnected()) {
-    Serial.println("reading weights");
-    sendWeightValue(0, readScale(0));
-    sendWeightValue(1, readScale(1));
-    sendWeightValue(2, readScale(2));
-    sendWeightValue(3, readScale(3));
+    readValidateSend(0);
+    readValidateSend(1);
+    readValidateSend(2);
+    readValidateSend(3);
   }
 
-  delay(1000);
+  delay(10);
+}
+
+void readValidateSend(int index) {
+  int value = readScale(index);
+
+  if (value == -2147483648) {
+    return; // error case, do not send
+  }
+  sendWeightValue(index, value);
 }

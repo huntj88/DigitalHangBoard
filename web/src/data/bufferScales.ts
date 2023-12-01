@@ -14,7 +14,7 @@ export function bufferScales(): OperatorFunction<ScaleData, ScaleData[]>  {
           let index3Exist = buffer.find((x) => x.index === 3);
 
           if (index0Exist && index1Exist && index2Exist && index3Exist) {
-            destination.next(buffer)
+            destination.next([...buffer])
             buffer = []
           }
         },
