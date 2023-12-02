@@ -9,6 +9,7 @@ export type Session = {
   active: boolean
 }
 
+// TODO: timeout before actually ending session
 export class SessionManager {
   sessions: Session[] = []
 
