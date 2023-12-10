@@ -13,52 +13,81 @@ type CalibrationMeasurement = {
   rawValue: number,
 }
 export default function CalibrationPage() {
-  const last10Ref = useRef<ScaleData[]>([]);
-  const inputRef = useRef<HTMLInputElement>();
+  const last50Ref = useRef<ScaleData[]>([]);
+  const knownWeightInputRef = useRef<HTMLInputElement>();
   const { bluetoothManager } = useBluetoothContext();
   const [measurements, setMeasurements] = useState<CalibrationMeasurement[]>([]);
-  const [result, setResult] = useState<regression.DataPoint>();
+
   useEffect(() => {
     const subscription = bluetoothManager
-      .getScaleObservable(0)
+      .getScaleObservable()
       .subscribe({
         next: (data) => {
-          if (last10Ref.current.length >= 10) {
-            last10Ref.current.shift();
+          if (last50Ref.current.length >= 50) {
+            last50Ref.current.shift();
           }
-          last10Ref.current.push(data);
+          last50Ref.current.push(data);
         }
       });
     return () => subscription.unsubscribe();
   }, [bluetoothManager]);
 
-  const x = result?.[0] ?? 0;
-  const y = result?.[1] ?? 0;
-
   return <div>
-    <Input ref={inputRef as Ref<HTMLInputElement>} />
+    <Input ref={knownWeightInputRef as Ref<HTMLInputElement>} type={"number"}/>
+    <br />
     <Button onClick={() => {
       setMeasurements(prevState => {
         const newMeasurement = {
           index: 0,
-          knownWeight: parseInt(inputRef.current!.value),
-          rawValue: average(last10Ref.current.map(x => x.value))
+          knownWeight: parseInt(knownWeightInputRef.current!.value),
+          rawValue: average(last50Ref.current.filter(x => x.index === 0).map(x => x.value))
         };
         return [...prevState, newMeasurement];
       });
-    }}>Take measurement</Button>
+    }}>Measure index 0</Button>
+    <br />
+    <Button onClick={() => {
+      setMeasurements(prevState => {
+        const newMeasurement = {
+          index: 1,
+          knownWeight: parseInt(knownWeightInputRef.current!.value),
+          rawValue: average(last50Ref.current.filter(x => x.index === 1).map(x => x.value))
+        };
+        return [...prevState, newMeasurement];
+      });
+    }}>Measure index 1</Button>
+    <br />
+    <Button onClick={() => {
+      setMeasurements(prevState => {
+        const newMeasurement = {
+          index: 2,
+          knownWeight: parseInt(knownWeightInputRef.current!.value),
+          rawValue: average(last50Ref.current.filter(x => x.index === 2).map(x => x.value))
+        };
+        return [...prevState, newMeasurement];
+      });
+    }}>Measure index 2</Button>
+    <br />
+    <Button onClick={() => {
+      setMeasurements(prevState => {
+        const newMeasurement = {
+          index: 3,
+          knownWeight: parseInt(knownWeightInputRef.current!.value),
+          rawValue: average(last50Ref.current.filter(x => x.index === 3).map(x => x.value))
+        };
+        return [...prevState, newMeasurement];
+      });
+    }}>Measure index 3</Button>
+    <br />
     {measurements.map(x => {
       return <div key={x.rawValue}><p>{x.rawValue}</p><p>{x.knownWeight}</p></div>;
     })}
     <Button onClick={() => {
-      let data = measurements.map((m) => [m.rawValue, m.knownWeight]);
-      const result = regression.linear(data as DataPoint[], {precision: 5});
-      let x1 = average(last10Ref.current.map(x => x.value));
-      const dataPoint = result.predict(x1);
-      setResult(dataPoint);
+      linearRegression(0, measurements)
+      linearRegression(1, measurements)
+      linearRegression(2, measurements)
+      linearRegression(3, measurements)
     }}>Calculate Slope</Button>
-    <p>{`raw x: ${x}`}</p>
-    <p>{`predict y: ${y}`}</p>
   </div>;
 }
 
@@ -67,4 +96,15 @@ function average(array: number[]) {
     return previousValue + currentValue;
   });
   return sum / array.length;
+}
+
+function linearRegression(index: number, measurements: CalibrationMeasurement[]) {
+  const data = measurements
+    .filter(m => m.index === index)
+    .map((m) => [m.rawValue, m.knownWeight]);
+  const result = regression.linear(data as DataPoint[], {precision: 7});
+  console.log("equation", "index: ", index, result.string, result.equation)
+  return result
+  // let x = average(last50.filter(x => x.index === index).map(x => x.value));
+  // const dataPoint = result.predict(x);
 }

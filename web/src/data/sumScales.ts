@@ -1,11 +1,13 @@
 import { bufferTime, filter, map, Observable } from "rxjs";
 import { ScaleAverageData, ScaleData } from "@/bluetooth/BluetoothManager";
 import { bufferScales } from "@/data/bufferScales";
+import { convertToPounds } from "@/data/convertToPounds";
 
 export function sumScales(dataFromAllScales: Observable<ScaleData>): Observable<ScaleAverageData> {
   return dataFromAllScales.pipe(
     // bufferTime(200),
     // filter((x) => x.length >= 4),
+    convertToPounds,
     bufferScales(),
     map((buffered) => {
       const average = (array: number[]) =>
