@@ -6,6 +6,7 @@ import { BluetoothConnect } from "@/components/BluetoothConnect";
 import { useBluetoothContext } from "@/bluetooth/BluetoothProvider";
 import { LiveGraphAverage, LiveGraphIndex } from "@/components/LiveGraph";
 import { SessionGraphWrapper } from "@/components/SessionGraph";
+import Link from "next/link";
 
 // Create a custom 'useStyles' hook to define the styling for the Home component.
 const useStyles = makeStyles({
@@ -26,6 +27,7 @@ export default function LocalPage() {
 
   return (
     <main className={styles.container}>
+      <Link href={"/nav/local/calibrate"}>Calibrate</Link>
       {isConnected ? <LiveGraphAverage /> : <BluetoothConnect />}
       {/*{isConnected && <LiveGraphIndex index={0} />}*/}
       {/*{isConnected && <LiveGraphIndex index={1} />}*/}
