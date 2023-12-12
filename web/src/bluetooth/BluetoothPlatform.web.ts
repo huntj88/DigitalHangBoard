@@ -24,13 +24,18 @@ export class BluetoothPlatformWeb implements BluetoothPlatform {
     const device = await navigator.bluetooth.requestDevice({
       filters: [{ services: [serviceId] }],
     });
+    console.log("connecting")
     const server: BluetoothRemoteGATTServer | undefined =
       await device.gatt?.connect();
     if (!server) {
       throw new Error("server undefined");
     }
+
+    console.log("getting service")
     const service: BluetoothRemoteGATTService =
       await server.getPrimaryService(serviceId);
+
+    console.log("getting characteristics")
     const characteristics: BluetoothRemoteGATTCharacteristic[] =
       await Promise.all([
         service.getCharacteristic(scale0),
@@ -44,10 +49,13 @@ export class BluetoothPlatformWeb implements BluetoothPlatform {
       scale2: characteristics[2],
       scale3: characteristics[3],
     };
+
+    console.log("adding disconnect listener")
     if (this.onConnectionChangedCallback) {
       this.onConnectionChangedCallback!(true);
       device.addEventListener("gattserverdisconnected", () => {
         this.onConnectionChangedCallback!(false);
+        console.log("disconnect")
       });
     } else {
       throw new Error("connectionChanged callback not configured");
@@ -63,6 +71,7 @@ export class BluetoothPlatformWeb implements BluetoothPlatform {
       this: BluetoothRemoteGATTCharacteristic,
       ev: Event,
     ) => void = (event: Event) => {
+      console.log("on changed", event)
       if (this.isCharacteristic(event.currentTarget)) {
         const byteInfo = event.currentTarget.value;
         const value = byteInfo?.getInt32(byteInfo.byteOffset, true);
