@@ -71,12 +71,12 @@ export class BluetoothPlatformWeb implements BluetoothPlatform {
       this: BluetoothRemoteGATTCharacteristic,
       ev: Event
     ) => void = (event: Event) => {
-      console.log("on changed", event, characteristic);
       const byteInfo = characteristic.value;
       const value = byteInfo?.getInt32(byteInfo.byteOffset, true);
+      console.log("on changed", value);
       value !== undefined &&
       onEvent({
-        date: new Date(event.timeStamp),
+        date: new Date(),
         value
       });
     };
