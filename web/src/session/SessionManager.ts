@@ -1,4 +1,4 @@
-import { BluetoothManager, ScaleData } from "@/bluetooth/BluetoothManager";
+import { BluetoothManager, ScaleAverageData, ScaleData } from "@/bluetooth/BluetoothManager";
 import { sumScales } from "@/data/sumScales";
 import { Observable, Subject, Subscription } from "rxjs";
 import { v4 as uuid } from "uuid";
@@ -8,15 +8,15 @@ export type Session = {
   scaleData: ScaleData[],
   active: boolean
 }
-
-// if over 5 pounds for 1 second start new session and backfill data
-
-// TODO: timeout before actually ending session
 export class SessionManager {
   private sessionSubject = new Subject<Session>();
-  public sessions: Map<string, Session> = new Map<string, Session>();
-  public activeId: string | undefined = undefined;
   private lastTimeBelowMinLimit: Date = new Date();
+  private lastTimeAboveMinLimit: Date = new Date();
+  private last100BeforeActive: ScaleData[] = [];
+  private sessionStartEndWeight = 5
+
+  public sessions: Map<string, Session> = new Map<string, Session>();
+  public recentId: string | undefined = undefined;
 
   /**
    * get active or most recent session. Emits on session start and end
@@ -30,9 +30,14 @@ export class SessionManager {
       .getScaleObservable()
       .subscribe({
         next: (data) => {
-          const recentSession = this.activeId ? this.sessions.get(this.activeId) : undefined;
+          const recentSession = this.recentId ? this.sessions.get(this.recentId) : undefined;
           if (recentSession && recentSession.active) {
             recentSession.scaleData.push(data);
+          } else {
+            if (this.last100BeforeActive.length > 100) {
+              this.last100BeforeActive.shift();
+            }
+            this.last100BeforeActive.push(data);
           }
         },
         error: (e) => console.error(e),
@@ -42,11 +47,12 @@ export class SessionManager {
     const createNewSession = () => {
       const session = {
         id: uuid(),
-        scaleData: [],
+        scaleData: [...this.last100BeforeActive],
         active: true
       };
+      this.last100BeforeActive = []
       this.sessions.set(session.id, session);
-      this.activeId = session.id;
+      this.recentId = session.id;
       this.sessionSubject.next(session);
     };
 
@@ -55,20 +61,22 @@ export class SessionManager {
       .pipe(sumScales)
       .subscribe({
         next: (data) => {
-          const recentSession = this.activeId ? this.sessions.get(this.activeId) : undefined;
+          if (data.value < this.sessionStartEndWeight) {
+            this.lastTimeBelowMinLimit = new Date();
+          } else {
+            this.lastTimeAboveMinLimit = new Date();
+          }
+          const recentSession = this.recentId ? this.sessions.get(this.recentId) : undefined;
           if (recentSession) {
-            if (data.value <= 5 && recentSession.active) {
+            if (recentSession.active && this.lastTimeAboveMinLimit.getTime() + 500 < new Date().getTime()) {
               recentSession.active = false;
               // todo: set activeId to undefined?
               this.sessionSubject.next(recentSession);
-            } else if (data.value > 5 && !recentSession.active) {
+            } else if (!recentSession.active && this.lastTimeBelowMinLimit.getTime() + 500 < new Date().getTime()) {
               createNewSession();
             }
-          } else if (data.value > 5) {
+          } else if (data.value > this.sessionStartEndWeight) {
             createNewSession();
-          }
-          if (data.value < 5) {
-            this.lastTimeBelowMinLimit = new Date();
           }
         },
         error: (e) => console.error(e),
