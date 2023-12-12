@@ -158,9 +158,9 @@ export const LiveGraph = (props: { refs: MutableRefObject<number>, data: Observa
   const maxYRef = useRef<number>(0);
 
   useEffect(() => {
-    console.log("live graph", "useEffect")
-    if (props.refs && props.refs.current === 0) {
-      // TODO: why do i need to do this?
+    const env = process.env.NODE_ENV
+    if(env == "development" && props.refs && props.refs.current === 0) {
+      // TODO: why do i need to do this only in development environment?
       props.refs.current += 1;
       console.log("live graph", "useEffect", "early return")
       return;
@@ -169,7 +169,6 @@ export const LiveGraph = (props: { refs: MutableRefObject<number>, data: Observa
     const subscription = props.data
       .subscribe({
         next: (data) => {
-          console.log("live graph", data)
           if (xyDataRef.current.length > 200) {
             // only keep visible data, remove oldest
             xyDataRef.current.shift();
