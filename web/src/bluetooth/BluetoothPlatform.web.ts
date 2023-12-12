@@ -5,7 +5,7 @@ import {
   scale1,
   scale2,
   scale3,
-  serviceId,
+  serviceId
 } from "@/bluetooth/BluetoothPlatform.interface";
 
 type Characteristics = { [key: string]: BluetoothRemoteGATTCharacteristic };
@@ -22,40 +22,40 @@ export class BluetoothPlatformWeb implements BluetoothPlatform {
 
   public async connect(): Promise<void> {
     const device = await navigator.bluetooth.requestDevice({
-      filters: [{ services: [serviceId] }],
+      filters: [{ services: [serviceId] }]
     });
-    console.log("connecting")
+    console.log("connecting");
     const server: BluetoothRemoteGATTServer | undefined =
       await device.gatt?.connect();
     if (!server) {
       throw new Error("server undefined");
     }
 
-    console.log("getting service")
+    console.log("getting service");
     const service: BluetoothRemoteGATTService =
       await server.getPrimaryService(serviceId);
 
-    console.log("getting characteristics")
+    console.log("getting characteristics");
     const characteristics: BluetoothRemoteGATTCharacteristic[] =
       await Promise.all([
         service.getCharacteristic(scale0),
         service.getCharacteristic(scale1),
         service.getCharacteristic(scale2),
-        service.getCharacteristic(scale3),
+        service.getCharacteristic(scale3)
       ]);
     this.characteristics = {
       scale0: characteristics[0],
       scale1: characteristics[1],
       scale2: characteristics[2],
-      scale3: characteristics[3],
+      scale3: characteristics[3]
     };
 
-    console.log("adding disconnect listener")
+    console.log("adding disconnect listener");
     if (this.onConnectionChangedCallback) {
       this.onConnectionChangedCallback!(true);
       device.addEventListener("gattserverdisconnected", () => {
         this.onConnectionChangedCallback!(false);
-        console.log("disconnect")
+        console.log("disconnect");
       });
     } else {
       throw new Error("connectionChanged callback not configured");
@@ -64,23 +64,21 @@ export class BluetoothPlatformWeb implements BluetoothPlatform {
 
   public addCharacteristicIntEventListener(
     characteristicName: string,
-    onEvent: (event: CharacteristicEventIntData) => void,
+    onEvent: (event: CharacteristicEventIntData) => void
   ): void {
     const characteristic = this.characteristics![characteristicName];
     const onChanged: (
       this: BluetoothRemoteGATTCharacteristic,
-      ev: Event,
+      ev: Event
     ) => void = (event: Event) => {
-      console.log("on changed", event)
-      if (this.isCharacteristic(event.currentTarget)) {
-        const byteInfo = event.currentTarget.value;
-        const value = byteInfo?.getInt32(byteInfo.byteOffset, true);
-        value !== undefined &&
-          onEvent({
-            date: new Date(event.timeStamp),
-            value,
-          });
-      }
+      console.log("on changed", event, characteristic);
+      const byteInfo = characteristic.value;
+      const value = byteInfo?.getInt32(byteInfo.byteOffset, true);
+      value !== undefined &&
+      onEvent({
+        date: new Date(event.timeStamp),
+        value
+      });
     };
     characteristic.addEventListener("characteristicvaluechanged", onChanged);
     characteristic.startNotifications().then((characteristic) => {
@@ -89,7 +87,7 @@ export class BluetoothPlatformWeb implements BluetoothPlatform {
   }
 
   private isCharacteristic(
-    value: any,
+    value: any
   ): value is BluetoothRemoteGATTCharacteristic {
     return value.value !== undefined && value.uuid != undefined;
   }
