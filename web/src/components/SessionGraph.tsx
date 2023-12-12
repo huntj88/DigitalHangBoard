@@ -3,7 +3,7 @@
 import { makeStyles } from "@fluentui/react-components";
 import "chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -111,22 +111,43 @@ const useStyles = makeStyles({
 
 export const SessionGraphWrapper = () => {
   const { sessionManager } = useSessionContext();
-  const show = sessionManager.sessions[0] !== undefined;
+  const [_, setCurrentSession] = useState<Session>()
+  const [previousSession, setPreviousSession] = useState<Session>()
+  useEffect(() => {
+    sessionManager.getRecentSession().subscribe({
+      next: (session) => {
+        if (session.active) {
+          setCurrentSession(session)
+        } else {
+          setCurrentSession(prevState => {
+            if (prevState?.scaleData.length ?? 0 > 10) {
+              setPreviousSession(session)
+            }
+            return undefined;
+          })
+        }
+      },
+      error: (e) => console.error(e),
+      complete: () => console.info("SessionGraph complete")
+    })
+  }, [sessionManager]);
+  const show = previousSession !== undefined;
 
   // TODO: make a sessions hook
-  // TODO: average session scales
   return (
     <div>
-      {show ? (<SessionGraph session={sessionManager.sessions[0]} />) : (<div>loading</div>)}
+      {show ? (<SessionGraph session={previousSession} />) : (<div>loading</div>)}
     </div>
   );
 };
 
 export const SessionGraph = (props: { session: Session }) => {
   const styles = useStyles();
-
+  const [sessionId, setSessionId] = useState<string>();
   const [scaleState, setScaleState] = useState<ScaleAverageData[]>([]);
-  if (scaleState.length === 0) {
+  if (sessionId != props.session.id) {
+    setScaleState([]);
+    setSessionId(props.session.id)
     from(props.session.scaleData)
       .pipe(sumScales)
       .subscribe({
