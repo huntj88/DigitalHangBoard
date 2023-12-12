@@ -70,10 +70,9 @@ export class BluetoothPlatformWeb implements BluetoothPlatform {
     const onChanged: (
       this: BluetoothRemoteGATTCharacteristic,
       ev: Event
-    ) => void = (event: Event) => {
+    ) => void = (_: Event) => {
       const byteInfo = characteristic.value;
       const value = byteInfo?.getInt32(byteInfo.byteOffset, true);
-      console.log("on changed", value);
       value !== undefined &&
       onEvent({
         date: new Date(),
@@ -84,11 +83,5 @@ export class BluetoothPlatformWeb implements BluetoothPlatform {
     characteristic.startNotifications().then((characteristic) => {
       console.log("startNotifications: ", characteristic);
     });
-  }
-
-  private isCharacteristic(
-    value: any
-  ): value is BluetoothRemoteGATTCharacteristic {
-    return value.value !== undefined && value.uuid != undefined;
   }
 }

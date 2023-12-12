@@ -150,6 +150,7 @@ export const LiveGraphIndex = (props: { index: number }) => {
 };
 
 export const LiveGraph = (props: { refs: MutableRefObject<number>, data: Observable<ScaleData> }) => {
+  console.log("live graph")
   const styles = useStyles();
   const xyDataRef = useRef<{ x: number, y: number }[]>([]);
   const lineRef = useRef<ChartJSOrUndefined>();
@@ -157,14 +158,18 @@ export const LiveGraph = (props: { refs: MutableRefObject<number>, data: Observa
   const maxYRef = useRef<number>(0);
 
   useEffect(() => {
+    console.log("live graph", "useEffect")
     if (props.refs && props.refs.current === 0) {
       // TODO: why do i need to do this?
       props.refs.current += 1;
+      console.log("live graph", "useEffect", "early return")
       return;
     }
+    console.log("live graph", "useEffect", "subscribe")
     const subscription = props.data
       .subscribe({
         next: (data) => {
+          console.log("live graph", data)
           if (xyDataRef.current.length > 200) {
             // only keep visible data, remove oldest
             xyDataRef.current.shift();
@@ -188,7 +193,10 @@ export const LiveGraph = (props: { refs: MutableRefObject<number>, data: Observa
         complete: () => console.info("LiveGraph complete")
       });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      console.log("live graph", "useEffect", "unsubscribe")
+      subscription.unsubscribe();
+    };
   }, [props.data, props.refs]);
 
   return (
