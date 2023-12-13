@@ -12,7 +12,7 @@ export class SessionManager {
   private sessionSubject = new Subject<Session>();
   private lastTimeBelowMinLimit: Date = new Date();
   private lastTimeAboveMinLimit: Date = new Date();
-  private last100BeforeActive: ScaleData[] = [];
+  private last200BeforeActive: ScaleData[] = [];
   private sessionStartEndWeight = 5
 
   public sessions: Map<string, Session> = new Map<string, Session>();
@@ -34,10 +34,10 @@ export class SessionManager {
           if (recentSession && recentSession.active) {
             recentSession.scaleData.push(data);
           } else {
-            if (this.last100BeforeActive.length > 100) {
-              this.last100BeforeActive.shift();
+            if (this.last200BeforeActive.length > 200) {
+              this.last200BeforeActive.shift();
             }
-            this.last100BeforeActive.push(data);
+            this.last200BeforeActive.push(data);
           }
         },
         error: (e) => console.error(e),
@@ -47,10 +47,10 @@ export class SessionManager {
     const createNewSession = () => {
       const session = {
         id: uuid(),
-        scaleData: [...this.last100BeforeActive],
+        scaleData: [...this.last200BeforeActive],
         active: true
       };
-      this.last100BeforeActive = []
+      this.last200BeforeActive = []
       this.sessions.set(session.id, session);
       this.recentId = session.id;
       this.sessionSubject.next(session);
@@ -68,7 +68,7 @@ export class SessionManager {
           }
           const recentSession = this.recentId ? this.sessions.get(this.recentId) : undefined;
           if (recentSession) {
-            if (recentSession.active && dateIsOlderThan(this.lastTimeAboveMinLimit, 500)) {
+            if (recentSession.active && dateIsOlderThan(this.lastTimeAboveMinLimit, 1000)) {
               recentSession.active = false;
               // todo: set activeId to undefined?
               this.sessionSubject.next(recentSession);
