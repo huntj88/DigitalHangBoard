@@ -4,7 +4,6 @@ import {
   BluetoothPlatform,
   CharacteristicEventIntData,
 } from "@/bluetooth/BluetoothPlatform.interface";
-import { BluetoothPlatformMock } from "@/bluetooth/BluetoothPlatform.mock";
 
 export class BluetoothManager {
   private platform = this.getPlatformImplementation();
