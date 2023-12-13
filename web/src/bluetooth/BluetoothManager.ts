@@ -16,19 +16,19 @@ export class BluetoothManager {
       this.connectedSubject.next(isConnected);
     });
     await this.platform.connect();
-    this.platform.addCharacteristicIntEventListener(
+    await this.platform.addCharacteristicIntEventListener(
       "scale0",
       this.getEventCallback(0),
     );
-    this.platform.addCharacteristicIntEventListener(
+    await this.platform.addCharacteristicIntEventListener(
       "scale1",
       this.getEventCallback(1),
     );
-    this.platform.addCharacteristicIntEventListener(
+    await this.platform.addCharacteristicIntEventListener(
       "scale2",
       this.getEventCallback(2),
     );
-    this.platform.addCharacteristicIntEventListener(
+    await this.platform.addCharacteristicIntEventListener(
       "scale3",
       this.getEventCallback(3),
     );

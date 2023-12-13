@@ -62,10 +62,10 @@ export class BluetoothPlatformWeb implements BluetoothPlatform {
     }
   }
 
-  public addCharacteristicIntEventListener(
+  public async addCharacteristicIntEventListener(
     characteristicName: string,
     onEvent: (event: CharacteristicEventIntData) => void
-  ): void {
+  ): Promise<void> {
     const characteristic = this.characteristics![characteristicName];
     const onChanged: (
       this: BluetoothRemoteGATTCharacteristic,
@@ -82,10 +82,10 @@ export class BluetoothPlatformWeb implements BluetoothPlatform {
     console.log("bluetooth web", "adding event listener");
     characteristic.addEventListener("characteristicvaluechanged", onChanged);
     console.log("bluetooth web", "starting notifications", characteristic);
-    characteristic.startNotifications().then((characteristic) => {
+    return characteristic.startNotifications().then((characteristic) => {
       console.log("startNotifications: ", characteristic);
     }).catch(e => {
-      console.error("bluetooth web", "error", e, characteristic)
+      console.error("bluetooth web", "error", e, characteristic);
     });
   }
 }

@@ -4,7 +4,7 @@ export interface BluetoothPlatform {
   addCharacteristicIntEventListener(
     characteristic: string,
     onEvent: (event: CharacteristicEventIntData) => void,
-  ): void;
+  ): Promise<void>;
 
   onConnectionChanged(onChanged: (isConnected: boolean) => void): void;
 }
