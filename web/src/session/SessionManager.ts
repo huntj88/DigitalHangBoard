@@ -68,14 +68,14 @@ export class SessionManager {
           }
           const recentSession = this.recentId ? this.sessions.get(this.recentId) : undefined;
           if (recentSession) {
-            if (recentSession.active && this.lastTimeAboveMinLimit.getTime() + 500 < new Date().getTime()) {
+            if (recentSession.active && dateIsOlderThan(this.lastTimeAboveMinLimit, 500)) {
               recentSession.active = false;
               // todo: set activeId to undefined?
               this.sessionSubject.next(recentSession);
-            } else if (!recentSession.active && this.lastTimeBelowMinLimit.getTime() + 500 < new Date().getTime()) {
+            } else if (!recentSession.active && dateIsOlderThan(this.lastTimeBelowMinLimit, 500)) {
               createNewSession();
             }
-          } else if (data.value > this.sessionStartEndWeight) {
+          } else if (dateIsOlderThan(this.lastTimeBelowMinLimit, 500)) {
             createNewSession();
           }
         },
@@ -85,6 +85,9 @@ export class SessionManager {
 
     return [scaleDataSubscription, sessionStartSubscription];
   }
+}
+function dateIsOlderThan(date: Date, milliseconds: number): boolean {
+  return date.getTime() + milliseconds < new Date().getTime()
 }
 
 // TODO: only allow one bluetooth connection,
