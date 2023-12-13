@@ -12,7 +12,7 @@ import {
   makeStyles,
   tokens
 } from "@fluentui/react-components";
-import { BluetoothConnect } from "@/components/BluetoothConnect";
+import { UserProvider } from "@auth0/nextjs-auth0/client";
 import { BluetoothProvider } from "@/bluetooth/BluetoothProvider";
 import { SessionProvider } from "@/session/SessionProvider";
 import { ChildrenProp } from "@/components/util";
@@ -46,7 +46,9 @@ export function Providers({ children }: ChildrenProp) {
           <WrappedFluentProvider>
             <BluetoothProvider>
               <SessionProvider>
-                {children}
+                <UserProvider>
+                  {children}
+                </UserProvider>
               </SessionProvider>
             </BluetoothProvider>
           </WrappedFluentProvider>

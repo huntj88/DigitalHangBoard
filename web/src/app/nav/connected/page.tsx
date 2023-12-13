@@ -1,3 +1,5 @@
 export default function blah() {
-  return <div>wow</div>;
+  return <div>
+    <a href="/api/auth/login">Login</a>
+  </div>;
 }

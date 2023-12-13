@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth0/nextjs-auth0": "^3.5.0",
     "@fluentui/react-components": "^9.40.0",
     "@types/web-bluetooth": "^0.0.20",
     "chart.js": "^4.4.0",
