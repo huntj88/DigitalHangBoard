@@ -23,7 +23,7 @@ export class BluetoothPlatformMock implements BluetoothPlatform {
   public addCharacteristicIntEventListener(
     characteristicName: string,
     onEvent: (event: CharacteristicEventIntData) => void,
-  ): void {
+  ): Promise<void> {
     let previous = 5;
     setInterval(() => {
       const newValue = generateRandom(
@@ -34,6 +34,7 @@ export class BluetoothPlatformMock implements BluetoothPlatform {
       previous = newValue;
     }, 70);
     // TODO: report from mock json
+    return Promise.resolve()
   }
 }
 
