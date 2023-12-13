@@ -79,9 +79,13 @@ export class BluetoothPlatformWeb implements BluetoothPlatform {
         value
       });
     };
+    console.log("bluetooth web", "adding event listener");
     characteristic.addEventListener("characteristicvaluechanged", onChanged);
+    console.log("bluetooth web", "starting notifications", characteristic);
     characteristic.startNotifications().then((characteristic) => {
       console.log("startNotifications: ", characteristic);
+    }).catch(e => {
+      console.error("bluetooth web", "error", e, characteristic)
     });
   }
 }
