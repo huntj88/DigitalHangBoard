@@ -1,7 +1,7 @@
 void setup() {
   Serial.begin(115200);
-  setupScales();
   setupBluetoothServer();
+  setupScales();
 }
 
 void loop() {

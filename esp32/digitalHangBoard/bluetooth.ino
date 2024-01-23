@@ -48,7 +48,7 @@ void setupTestingMacAddress() {
 }
 
 void setupBluetoothServer() {
-  setupTestingMacAddress();
+  // setupTestingMacAddress();
   BLEDevice::init(bleServerName);
 
   pServer = BLEDevice::createServer();
