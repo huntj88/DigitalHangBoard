@@ -21,12 +21,13 @@ void setupScreen() {
   display.display();
 }
 
-void displayValue(String value) {
+void displayErrors(String value) {
   display.clearDisplay();
-  display.setTextSize(2);             // Normal 1:1 pixel scale
-  display.setTextColor(SSD1306_WHITE);        // Draw white text
-  display.setCursor(0,0);             // Start at top-left corner
-  display.println(F("Hello, world!"));
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0,0);
+  display.println("errors occurred");
+  display.println(value);
   display.display();
 }
 

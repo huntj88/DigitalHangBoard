@@ -2,6 +2,15 @@
 
 Preferences calibration;
 
+// error code format
+// code:index
+
+// error code meanings
+// 0 uncalibrated TODO
+// 1 scale read error
+
+String initErrors = "";
+
 void setup() {
   Serial.begin(115200);
   calibration.begin("dhb-calibration", false);
@@ -26,44 +35,59 @@ void setup() {
     Serial.print("scale");
     Serial.print(index);
     Serial.print(" calibration: ");
-    Serial.println(calibration.getFloat("scale" + index, -1), 7);
+    float calibrationValue = calibration.getFloat("scale" + index, -1);
+    Serial.println(calibrationValue, 7);
+
+    if (calibrationValue == -1) {
+      initErrors += "0:";
+      initErrors += index;
+      initErrors += "\n";
+    }
   }
 }
 
 void loop() {
-  if (isBluetoothClientConnected()) {
-    int rawValues[] = { -2147483648, -2147483648, -2147483648, -2147483648 };
+  if (initErrors.length() > 0) {
+    Serial.println(initErrors);
+    displayErrors(initErrors);
+    delay(1000);
+    return;
+  }
 
-    // errorCode:index
-    // 0 uncalibrated TODO
-    // 1 scale read error
-    String errors = "";
+  int rawValues[] = { -2147483648, -2147483648, -2147483648, -2147483648 };
+  String errors = "";
 
-    for (int index = 0; index < 4; index++) {
-      rawValues[index] = readScale(index);
+  for (int index = 0; index < 4; index++) {
+    int valueForIndex = readScale(index);
+    rawValues[index] = valueForIndex;
+
+    if (valueForIndex == -2147483648) {
+      errors += "1:";
+      errors += index;
+      errors += "\n";
     }
+  }
 
+  if (isBluetoothClientConnected()) {
     for (int index = 0; index < 4; index++) {
       int valueForIndex = rawValues[index];
       if (valueForIndex != -2147483648) {
         sendWeightValue(index, valueForIndex);
-      } else {
-        errors += "1:" + index;
       }
     }
+  }
 
-    if (errors.length() == 0) {
-      float sumWeight = 0;
-      for (int index = 0; index < 4; index++) {
-        int valueForIndex = rawValues[index];
-        sumWeight += calculateWeightFromValue(index, valueForIndex);
-      }
-      displayValue(sumWeight);
-      // TODO: render sum weight better
-    } else {
-      displayValue(errors);
-      // TODO: render errors better
+  if (errors.length() == 0) {
+    float sumWeight = 0;
+    for (int index = 0; index < 4; index++) {
+      int valueForIndex = rawValues[index];
+      sumWeight += calculateWeightFromValue(index, valueForIndex);
     }
+    displayValue(sumWeight);
+    // TODO: render sum weight better
+  } else {
+    Serial.println(errors);
+    displayErrors(errors);
   }
 
   delay(10);
