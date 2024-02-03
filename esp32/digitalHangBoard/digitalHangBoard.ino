@@ -9,11 +9,19 @@ Preferences calibration;
 // 0 uncalibrated TODO
 // 1 scale read error
 
-String initErrors = "";
+String calibrationErrors = "";
 
 void setup() {
   Serial.begin(115200);
   calibration.begin("dhb-calibration", false);
+  // calibration.clear();
+  // calibration.putFloat("scale" + 0, 0.00005);
+  // calibration.putFloat("scale" + 1, 0.0000497);
+  // calibration.putFloat("scale" + 2, 0.0000509);
+  // calibration.putFloat("scale" + 3, 0.0000514);
+
+  setupScreen();
+
   std::function<float(const int)> getCalibration = [calibration](int index) {
     return calibration.getFloat("scale" + index, -1);
   };
@@ -21,36 +29,26 @@ void setup() {
     calibration.putFloat("scale" + index, m);
   };
 
-  // calibration.clear();
-  // calibration.putFloat("scale" + 0, 0.00005);
-  // calibration.putFloat("scale" + 1, 0.0000497);
-  // calibration.putFloat("scale" + 2, 0.0000509);
-  // calibration.putFloat("scale" + 3, 0.0000514);
-
+  displayTitleSubtitle("Starting BlueTooth", getBLEServerName());
+  delay(1000);
   setupBluetoothServer(getCalibration, setCalibration);
+
+  displayTitleSubtitle("Calibrating","Don't touch Hangboard");
+  delay(1000);
   setupScales();
-  setupScreen();
 
-  for (int index = 0; index < 4; index++) {
-    Serial.print("scale");
-    Serial.print(index);
-    Serial.print(" calibration: ");
-    float calibrationValue = calibration.getFloat("scale" + index, -1);
-    Serial.println(calibrationValue, 7);
-
-    if (calibrationValue == -1) {
-      initErrors += "0:";
-      initErrors += index;
-      initErrors += "\n";
-    }
-  }
+  checkForCalibrationErrors();
 }
 
 void loop() {
-  if (initErrors.length() > 0) {
-    Serial.println(initErrors);
-    displayErrors(initErrors);
-    delay(1000);
+  if (calibrationErrors.length() > 0) {
+    Serial.println(calibrationErrors);
+    displayErrors(calibrationErrors);
+    delay(5000);
+
+    // TODO: add calibration characteristics to bluetooth
+    // check again in case calibration has been set over bluetooth
+    checkForCalibrationErrors();
     return;
   }
 
@@ -84,7 +82,6 @@ void loop() {
       sumWeight += calculateWeightFromValue(index, valueForIndex);
     }
     displayValue(sumWeight);
-    // TODO: render sum weight better
   } else {
     Serial.println(errors);
     displayErrors(errors);
@@ -96,10 +93,23 @@ void loop() {
 float calculateWeightFromValue(int index, int value) {
   // y = mx + b, b is always 0
   float m = calibration.getFloat("scale" + index, -1);
-  if (m == -1) {
-    // error case
-    return -1;
-  }
   float y = m * value;
   return y;
+}
+
+void checkForCalibrationErrors() {
+  calibrationErrors = "";
+  for (int index = 0; index < 4; index++) {
+    Serial.print("scale");
+    Serial.print(index);
+    Serial.print(" calibration: ");
+    float calibrationValue = calibration.getFloat("scale" + index, -1);
+    Serial.println(calibrationValue, 7);
+
+    if (calibrationValue == -1) {
+      calibrationErrors += "0:";
+      calibrationErrors += index;
+      calibrationErrors += "\n";
+    }
+  }
 }

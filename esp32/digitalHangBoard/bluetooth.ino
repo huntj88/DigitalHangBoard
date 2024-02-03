@@ -108,6 +108,10 @@ bool isBluetoothClientConnected() {
   return pServer->getConnectedCount() > 0;
 }
 
+String getBLEServerName() {
+  return bleServerName;
+}
+
 void sendWeightValue(int index, int value) {
   if (index == 0) {
     scale0Characteristic.setValue(value);
