@@ -16,7 +16,7 @@
     "chartjs-adapter-dayjs-4": "^1.0.4",
     "dayjs": "^1.11.10",
     "eruda": "^3.0.1",
-    "next": "14.0.2",
+    "next": "^14.1.0",
     "react": "^18",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
@@ -30,9 +30,11 @@
     "@types/react-dom": "^18",
     "@types/regression": "^2.0.6",
     "@types/uuid": "^9.0.7",
-    "eslint": "^8",
-    "eslint-config-next": "14.0.2",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "^14.1.0",
     "prettier": "3.1.0",
-    "typescript": "^5"
+    "typescript": "^5.3.3"
   }
 }
