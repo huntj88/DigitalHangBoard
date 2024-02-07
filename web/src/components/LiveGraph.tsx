@@ -37,9 +37,10 @@ ChartJS.register(
   Legend
 );
 
-export const options: (minX: number, maxY: number) => ChartOptions<"line"> = (
+export const options: (minX: number, maxY: number, minY: number) => ChartOptions<"line"> = (
   minX: number,
-  maxY: number
+  maxY: number,
+  minY: number
 ) => {
   return {
     responsive: true,
@@ -63,8 +64,8 @@ export const options: (minX: number, maxY: number) => ChartOptions<"line"> = (
     },
     scales: {
       y: {
-        min: 0,
-        max: Math.max(maxY + 10, 40)
+        min: minY,
+        max: maxY + 10
       },
       x: {
         title: {
@@ -155,7 +156,8 @@ export const LiveGraph = (props: { refs: MutableRefObject<number>, data: Observa
   const xyDataRef = useRef<{ x: number, y: number }[]>([]);
   const lineRef = useRef<ChartJSOrUndefined>();
   const minXRef = useRef<number>(new Date().getTime());
-  const maxYRef = useRef<number>(0);
+  const maxYRef = useRef<number>(30);
+  const minYRef = useRef<number>(0);
 
   useEffect(() => {
     const env = process.env.NODE_ENV;
@@ -177,8 +179,9 @@ export const LiveGraph = (props: { refs: MutableRefObject<number>, data: Observa
           xyDataRef.current.push({ x: data.date.getTime(), y: data.value });
           minXRef.current = data.date.getTime() - 2000;
           maxYRef.current = Math.max(maxYRef.current, data.value);
+          minYRef.current = Math.min(minYRef.current, data.value);
           if (lineRef.current) {
-            lineRef.current.options = options(minXRef.current, maxYRef.current);
+            lineRef.current.options = options(minXRef.current, maxYRef.current, minYRef.current);
             lineRef.current.data.datasets[0].data = xyDataRef.current;
             if (xyDataRef.current.length === 1) {
               // prevent weird start animation
