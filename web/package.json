@@ -12,6 +12,7 @@
     "@auth0/nextjs-auth0": "^3.5.0",
     "@fluentui/react-components": "^9.40.0",
     "@types/web-bluetooth": "^0.0.20",
+    "@vercel/postgres": "^0.7.2",
     "chart.js": "^4.4.0",
     "chartjs-adapter-dayjs-4": "^1.0.4",
     "dayjs": "^1.11.10",

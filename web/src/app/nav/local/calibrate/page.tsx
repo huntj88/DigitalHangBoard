@@ -12,6 +12,8 @@ type CalibrationMeasurement = {
   knownWeight: number,
   rawValue: number,
 }
+
+// TODO: set calibration on hangboard over bluetooth
 export default function CalibrationPage() {
   const last50Ref = useRef<ScaleData[]>([]);
   const knownWeightInputRef = useRef<HTMLInputElement>();
