@@ -204,7 +204,7 @@ export const LiveGraph = (props: { refs: MutableRefObject<number>, data: Observa
   return (
     <div className={styles.graph}>
       {/* option/data refs are used to prevent re-rendering <Line>, prefer to update chart data via lineRef */}
-      <Line ref={lineRef} options={options(minXRef.current, maxYRef.current)} data={lineData(xyDataRef.current)} />;
+      <Line ref={lineRef} options={options(minXRef.current, maxYRef.current, minYRef.current)} data={lineData(xyDataRef.current)} />;
     </div>
   );
 };
