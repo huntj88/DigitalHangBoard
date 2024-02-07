@@ -1,4 +1,4 @@
-import { BluetoothManager, ScaleAverageData, ScaleData } from "@/bluetooth/BluetoothManager";
+import { BluetoothManager, ScaleData, WeightUnit } from "@/bluetooth/BluetoothManager";
 import { sumScales } from "@/data/sumScales";
 import { Observable, Subject, Subscription } from "rxjs";
 import { v4 as uuid } from "uuid";
@@ -27,7 +27,7 @@ export class SessionManager {
 
   public subscribeProvider(bluetoothManager: BluetoothManager): Subscription[] {
     const scaleDataSubscription = bluetoothManager
-      .getScaleObservable()
+      .getScaleObservable({ unit: WeightUnit.Pounds })
       .subscribe({
         next: (data) => {
           const recentSession = this.recentId ? this.sessions.get(this.recentId) : undefined;
@@ -57,7 +57,7 @@ export class SessionManager {
     };
 
     const sessionStartSubscription = bluetoothManager
-      .getScaleObservable()
+      .getScaleObservable({ unit: WeightUnit.Pounds })
       .pipe(sumScales)
       .subscribe({
         next: (data) => {

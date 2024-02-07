@@ -1,5 +1,5 @@
 import {
-  BluetoothPlatform,
+  BluetoothPlatform, calibration,
   CharacteristicEventIntData,
   scale0,
   scale1,
@@ -41,13 +41,15 @@ export class BluetoothPlatformWeb implements BluetoothPlatform {
         service.getCharacteristic(scale0),
         service.getCharacteristic(scale1),
         service.getCharacteristic(scale2),
-        service.getCharacteristic(scale3)
+        service.getCharacteristic(scale3),
+        service.getCharacteristic(calibration)
       ]);
     this.characteristics = {
       scale0: characteristics[0],
       scale1: characteristics[1],
       scale2: characteristics[2],
-      scale3: characteristics[3]
+      scale3: characteristics[3],
+      calibration: characteristics[4]
     };
 
     console.log("adding disconnect listener");
@@ -87,5 +89,11 @@ export class BluetoothPlatformWeb implements BluetoothPlatform {
     }).catch(e => {
       console.error("bluetooth web", "error", e, characteristic);
     });
+  }
+
+  public async getCharacteristicStringValue(characteristicName: string): Promise<string> {
+    const characteristic = this.characteristics![characteristicName];
+    const byteInfo = await characteristic.readValue();
+    return new TextDecoder().decode(byteInfo)
   }
 }

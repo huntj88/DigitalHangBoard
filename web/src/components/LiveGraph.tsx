@@ -5,17 +5,17 @@ import "chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm";
 
 import React, { MutableRefObject, useEffect, useRef } from "react";
 import {
-  Chart as ChartJS,
   CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
+  Chart as ChartJS,
+  ChartOptions,
   Filler,
   Legend,
-  ChartOptions,
-  TimeScale
+  LinearScale,
+  LineElement,
+  PointElement,
+  TimeScale,
+  Title,
+  Tooltip
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { useBluetoothContext } from "@/bluetooth/BluetoothProvider";
@@ -23,7 +23,7 @@ import { useBluetoothContext } from "@/bluetooth/BluetoothProvider";
 import { ChartJSOrUndefined } from "react-chartjs-2/dist/types";
 import { sumScales } from "@/data/sumScales";
 import { map, Observable } from "rxjs";
-import { ScaleData } from "@/bluetooth/BluetoothManager";
+import { ScaleData, WeightUnit } from "@/bluetooth/BluetoothManager";
 
 ChartJS.register(
   CategoryScale,
@@ -121,7 +121,7 @@ export const LiveGraphAverage = () => {
   return (
     <>
       {bluetoothManager && <LiveGraph refs={counterRef} data={bluetoothManager
-        .getScaleObservable()
+        .getScaleObservable({ unit: WeightUnit.Pounds })
         .pipe(sumScales)
         .pipe(map((value, index) => {
           let data: ScaleData = {
@@ -150,7 +150,7 @@ export const LiveGraphIndex = (props: { index: number }) => {
 };
 
 export const LiveGraph = (props: { refs: MutableRefObject<number>, data: Observable<ScaleData> }) => {
-  console.log("live graph")
+  console.log("live graph");
   const styles = useStyles();
   const xyDataRef = useRef<{ x: number, y: number }[]>([]);
   const lineRef = useRef<ChartJSOrUndefined>();
@@ -158,14 +158,14 @@ export const LiveGraph = (props: { refs: MutableRefObject<number>, data: Observa
   const maxYRef = useRef<number>(0);
 
   useEffect(() => {
-    const env = process.env.NODE_ENV
-    if(env == "development" && props.refs && props.refs.current === 0) {
+    const env = process.env.NODE_ENV;
+    if (env == "development" && props.refs && props.refs.current === 0) {
       // TODO: why do i need to do this only in development environment?
       props.refs.current += 1;
-      console.log("live graph", "useEffect", "early return")
+      console.log("live graph", "useEffect", "early return");
       return;
     }
-    console.log("live graph", "useEffect", "subscribe")
+    console.log("live graph", "useEffect", "subscribe");
     const subscription = props.data
       .subscribe({
         next: (data) => {
@@ -193,7 +193,7 @@ export const LiveGraph = (props: { refs: MutableRefObject<number>, data: Observa
       });
 
     return () => {
-      console.log("live graph", "useEffect", "unsubscribe")
+      console.log("live graph", "useEffect", "unsubscribe");
       subscription.unsubscribe();
     };
   }, [props.data, props.refs]);

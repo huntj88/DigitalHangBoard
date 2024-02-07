@@ -8,8 +8,8 @@ Adafruit_NAU7802 scale1;
 Adafruit_NAU7802 scale2;
 Adafruit_NAU7802 scale3;
 
-int readScale(Adafruit_NAU7802* scale, int multiplexerIndex); // prototype so arduinoIDE doesn't move it.
-void setupScale(Adafruit_NAU7802* scale, int multiplexerIndex); // prototype so arduinoIDE doesn't move it.
+int readScale(Adafruit_NAU7802* scale, int multiplexerIndex);    // prototype so arduinoIDE doesn't move it.
+void setupScale(Adafruit_NAU7802* scale, int multiplexerIndex);  // prototype so arduinoIDE doesn't move it.
 
 void tcaselect(uint8_t i) {
   if (i > 7) return;
@@ -28,7 +28,7 @@ void setupScale(Adafruit_NAU7802* scale, int multiplexerIndex) {
   scale->setLDO(NAU7802_3V0);
   scale->setGain(NAU7802_GAIN_128);
   scale->setRate(NAU7802_RATE_40SPS);
-  for (uint8_t i=0; i<10; i++) {
+  for (uint8_t i = 0; i < 10; i++) {
     while (!scale->available()) {
       delay(1);
     }
@@ -62,12 +62,12 @@ int readScale(Adafruit_NAU7802* scale, int multiplexerIndex) {
   if (scale->available()) {
     return scale->read();
   } else {
-    return -2147483648; // min int value
+    return -2147483648;  // min int value
   }
 }
 
 int readScale(int index) {
-    if (index == 0) {
+  if (index == 0) {
     return readScale(&scale0, 3);
   } else if (index == 1) {
     return readScale(&scale1, 4);
@@ -78,6 +78,6 @@ int readScale(int index) {
   } else {
     Serial.print("invalid scale:");
     Serial.println(index);
-    return -2147483648; // min int value
+    return -2147483648;  // min int value
   }
 }

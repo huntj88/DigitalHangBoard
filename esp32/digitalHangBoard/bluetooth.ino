@@ -16,7 +16,6 @@
 
 BLECharacteristic scale0Characteristic("6766fbea-844a-459a-8def-643852f016b8", BLECharacteristic::PROPERTY_NOTIFY);
 BLE2902 scale0CCC;
-// BLECharacteristic scale0CalibrationCharacteristic("04722e1f-2029-4588-ae7d-8c764a0163af", BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
 
 BLECharacteristic scale1Characteristic("3f19be02-a46f-4ea7-851b-1c2b891cf63e", BLECharacteristic::PROPERTY_NOTIFY);
 BLE2902 scale1CCC;
@@ -26,6 +25,8 @@ BLE2902 scale2CCC;
 
 BLECharacteristic scale3Characteristic("15c40fb5-0311-465a-a77c-c42a8282e7cf", BLECharacteristic::PROPERTY_NOTIFY);
 BLE2902 scale3CCC;
+
+BLECharacteristic scaleCalibrationCharacteristic("04722e1f-2029-4588-ae7d-8c764a0163af", BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
 
 BLEServer *pServer;
 
@@ -62,14 +63,14 @@ class BLEConnectionCallbacks : public BLEServerCallbacks {
 
 void setupTestingMacAddress() {
   // appears as a new device, so cache on client doesn't matter
-  uint8_t base_mac_addr[8] = { 0x01, 0x08, 0x07, 0x04, 0x05, 0x06 };
+  uint8_t base_mac_addr[8] = { 0x01, 0x08, 0x07, 0x07, 0x05, 0x06 };
   base_mac_addr[0] &= ~0x01;  // make unicast
   base_mac_addr[0] |= 0x02;   // mark as locally administered
   Serial.println(esp_base_mac_addr_set(base_mac_addr));
 }
 
 void setupBluetoothServer(std::function<float(const int)> getCalibration, std::function<void(const int, const float)> setCalibration) {
-  // setupTestingMacAddress();
+  setupTestingMacAddress();
   BLEDevice::init(bleServerName);
 
   pServer = BLEDevice::createServer();
@@ -93,9 +94,15 @@ void setupBluetoothServer(std::function<float(const int)> getCalibration, std::f
   scale3Characteristic.addDescriptor(&scale3CCC);
   dhbService->addCharacteristic(&scale3Characteristic);
 
-  // calibration characteristic
-  // scale0CalibrationCharacteristic.setCallbacks(new CalibrationWriteCallback());
-  // dhbService->addCharacteristic(&scale0CalibrationCharacteristic);
+  float calibration0 = getCalibration(0);
+  float calibration1 = getCalibration(1);
+  float calibration2 = getCalibration(2);
+  float calibration3 = getCalibration(3);
+  std::string calibration = ftos(calibration0) + "," + ftos(calibration1) + "," + ftos(calibration2) + "," + ftos(calibration3);
+  scaleCalibrationCharacteristic.setValue(calibration);
+  // scaleCalibrationCharacteristic.setCallbacks(new CalibrationWriteCallback());
+  dhbService->addCharacteristic(&scaleCalibrationCharacteristic);
+
 
   dhbService->start();
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
@@ -126,4 +133,9 @@ void sendWeightValue(int index, int value) {
     scale3Characteristic.setValue(value);
     scale3Characteristic.notify();
   }
+}
+
+// float to string with precision of 7
+std::string ftos(float f) {
+  return std::string(String(f, 7).c_str());
 }

@@ -3,7 +3,7 @@
 import { Ref, useEffect, useRef, useState } from "react";
 import { Input } from "@fluentui/react-input";
 import { useBluetoothContext } from "@/bluetooth/BluetoothProvider";
-import { ScaleData } from "@/bluetooth/BluetoothManager";
+import { ScaleData, WeightUnit } from "@/bluetooth/BluetoothManager";
 import { Button } from "@fluentui/react-button";
 import regression, { DataPoint } from "regression";
 
@@ -20,7 +20,7 @@ export default function CalibrationPage() {
 
   useEffect(() => {
     const subscription = bluetoothManager
-      .getScaleObservable()
+      .getScaleObservable({ unit: WeightUnit.Pounds })
       .subscribe({
         next: (data) => {
           if (last50Ref.current.length >= 50) {

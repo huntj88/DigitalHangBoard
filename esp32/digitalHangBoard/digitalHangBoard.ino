@@ -33,7 +33,7 @@ void setup() {
   delay(1000);
   setupBluetoothServer(getCalibration, setCalibration);
 
-  displayTitleSubtitle("Calibrating","Don't touch Hangboard");
+  displayTitleSubtitle("Calibrating", "Don't touch Hangboard");
   delay(1000);
   setupScales();
 
