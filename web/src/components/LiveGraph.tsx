@@ -63,8 +63,8 @@ export const options: (minX: number, maxY: number) => ChartOptions<"line"> = (
     },
     scales: {
       y: {
-        // min: 0,
-        max: maxY + 10
+        min: 0,
+        max: Math.max(maxY + 10, 40)
       },
       x: {
         title: {
@@ -142,7 +142,7 @@ export const LiveGraphIndex = (props: { index: number }) => {
   return (
     <>
       {bluetoothManager && <LiveGraph refs={counterRef} data={bluetoothManager
-        .getScaleObservable(props.index)
+        .getScaleObservable({ index: props.index })
       }
       />}
     </>

@@ -1,6 +1,6 @@
 import {
   BluetoothPlatform,
-  CharacteristicEventIntData,
+  CharacteristicEventIntData
 } from "@/bluetooth/BluetoothPlatform.interface";
 
 export class BluetoothPlatformMock implements BluetoothPlatform {
@@ -16,25 +16,32 @@ export class BluetoothPlatformMock implements BluetoothPlatform {
     if (this.onConnectionChangedCallback) {
       this.onConnectionChangedCallback!(true);
     } else {
-      throw new Error("connectionChanged callback not configured");
+      return Promise.reject("connectionChanged callback not configured");
     }
   }
 
   public addCharacteristicIntEventListener(
     characteristicName: string,
-    onEvent: (event: CharacteristicEventIntData) => void,
+    onEvent: (event: CharacteristicEventIntData) => void
   ): Promise<void> {
     let previous = 5;
     setInterval(() => {
       const newValue = generateRandom(
         Math.max(0, previous - 10),
-        Math.min(30, previous + 2),
+        Math.min(30, previous + 2)
       );
       onEvent({ date: new Date(), value: newValue });
       previous = newValue;
     }, 70);
     // TODO: report from mock json
-    return Promise.resolve()
+    return Promise.resolve();
+  }
+
+  getCharacteristicStringValue(characteristicName: string): Promise<string> {
+    if ("calibration") {
+      return Promise.resolve("0.00005,0.0000497, 0.0000509, 0.0000514");
+    }
+    return Promise.reject("not implemented in mock");
   }
 }
 
