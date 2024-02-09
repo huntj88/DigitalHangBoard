@@ -27,7 +27,7 @@ export class SessionManager {
 
   public subscribeProvider(bluetoothManager: BluetoothManager): Subscription[] {
     const scaleDataSubscription = bluetoothManager
-      .getScaleObservable({ unit: WeightUnit.Pounds })
+      .getScaleObservable()
       .subscribe({
         next: (data) => {
           const recentSession = this.recentId ? this.sessions.get(this.recentId) : undefined;

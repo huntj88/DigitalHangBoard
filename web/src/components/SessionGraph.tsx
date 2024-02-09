@@ -24,6 +24,7 @@ import { useSessionContext } from "@/session/SessionProvider";
 import { from, groupBy, toArray } from "rxjs";
 import { sumScales } from "@/data/sumScales";
 import { ScaleAverageData, ScaleData } from "@/bluetooth/BluetoothManager";
+import { Button } from "@fluentui/react-button";
 
 ChartJS.register(
   CategoryScale,
@@ -109,53 +110,59 @@ const useStyles = makeStyles({
   }
 });
 
-export const SessionGraphWrapper = () => {
+export const SessionGraphWrapper = (props: { saveHang: (session: Session) => void }) => {
   const { sessionManager } = useSessionContext();
-  const [_, setCurrentSession] = useState<Session>()
-  const [previousSession, setPreviousSession] = useState<Session>()
+  const [_, setCurrentSession] = useState<Session>();
+  const [previousSession, setPreviousSession] = useState<Session>();
   useEffect(() => {
     sessionManager.getRecentSession().subscribe({
       next: (session) => {
         if (session.active) {
-          setCurrentSession(session)
+          setCurrentSession(session);
         } else {
           setCurrentSession(prevState => {
             if (prevState?.scaleData.length ?? 0 > 10) {
-              setPreviousSession(session)
+              setPreviousSession(session);
             }
             return undefined;
-          })
+          });
         }
       },
       error: (e) => console.error(e),
       complete: () => console.info("SessionGraph complete")
-    })
+    });
   }, [sessionManager]);
   const show = previousSession !== undefined;
 
   // TODO: make a sessions hook
   return (
     <div>
-      {show ? (<SessionGraph session={previousSession} />) : (<div>loading</div>)}
+      {show ?
+        (<SessionGraph
+          session={previousSession}
+          saveHang={() => {
+            props.saveHang(previousSession);
+          }} />)
+        : (<div>loading</div>)}
     </div>
   );
 };
 
-export const SessionGraph = (props: { session: Session }) => {
+export const SessionGraph = (props: { session: Session, saveHang: () => void }) => {
   const styles = useStyles();
   const [sessionId, setSessionId] = useState<string>();
   const [scaleState, setScaleState] = useState<ScaleAverageData[]>([]);
   if (sessionId != props.session.id) {
     setScaleState([]);
-    setSessionId(props.session.id)
+    setSessionId(props.session.id);
     from(props.session.scaleData)
       .pipe(sumScales)
       .subscribe({
         next: (data) => {
           setScaleState(prevState => {
-            return [...prevState, data]
+            return [...prevState, data];
           });
-        },
+        }
       });
   }
 
@@ -167,6 +174,7 @@ export const SessionGraph = (props: { session: Session }) => {
     <div className={styles.graph}>
       {/* option/data refs are used to prevent re-rendering <Line>, prefer to update chart data via lineRef */}
       <Line options={options()} data={data} />;
+      <Button onClick={props.saveHang}>Save</Button>
     </div>
   );
 };
