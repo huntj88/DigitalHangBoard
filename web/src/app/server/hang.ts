@@ -2,7 +2,7 @@ import "server-only";
 import { sql } from "@vercel/postgres";
 import { Session } from "@/session/SessionManager";
 
-type HangQuery = {
+type HangMomentQuery = {
   // todo: actual types instead of strings
   hangId: string
   hangMomentId: string
@@ -14,13 +14,23 @@ type HangQuery = {
   value: string
 }
 
+// type HangQuery = {
+//   // todo: actual types instead of strings
+//   hangId: string
+//   boardId: string
+//   userId: string
+//   createdAt: string
+//   calibration: string
+// }
+
 export type Hang = {
   // todo: actual types instead of strings
-  hangId: string
-  boardId: string
+  hangId: number
+  boardId: number
   userId: string
+  createdAt: Date
   calibration: string
-  timeSeries: Moment[]
+  timeSeries?: Moment[]
 }
 
 export type Moment = {
@@ -32,61 +42,101 @@ export type Moment = {
 
 export async function getHangs(): Promise<Hang[]> {
   const { rows } = await sql`
-      SELECT hang.hang_id,
-             hang_moment_id,
+      SELECT hang_id,
              board_id,
              user_id,
              calibration,
-             timestamp,
-             index,
-             value
-      FROM hang
-               JOIN public.hang_moment hm USING (hang_id);`;
+             created_at
+      FROM hang;`;
 
-  const hangMoments = rows.map(row => {
-    return {
+  return rows.map(row => {
+    const hang: Hang = {
       hangId: row["hang_id"],
-      hangMomentId: row["hang_moment_id"],
       boardId: row["board_id"],
       userId: row["user_id"],
-      calibration: row["calibration"],
+      createdAt: row["created_at"],
+      calibration: row["calibration"]
+    };
+    return hang;
+  });
+}
+
+export async function loadTimeSeries(hang: Hang): Promise<Hang> {
+  const { rows } = await sql`
+      SELECT timestamp, index, value
+      FROM hang_moment
+      WHERE hang_id = ${hang.hangId};
+  `;
+
+  hang.timeSeries = rows.map(row => {
+    const moment: Moment = {
       timestamp: row["timestamp"],
       index: row["index"],
       value: row["value"]
-    } as HangQuery;
-  });
-
-  const groupByHangId = new Map<string, HangQuery[]>();
-  hangMoments.forEach((queryData) => {
-    const existing = groupByHangId.get(queryData.hangId);
-    if (existing) {
-      existing.push(queryData);
-    } else {
-      groupByHangId.set(queryData.hangId, [queryData]);
-    }
-  });
-
-  const hangs: Hang[] = [];
-  groupByHangId.forEach(hangQuery => {
-    const hang: Hang = {
-      hangId: hangQuery[0].hangId,
-      boardId: hangQuery[0].boardId,
-      userId: hangQuery[0].userId,
-      calibration: hangQuery[0].calibration,
-      timeSeries: hangQuery.map(momentQuery => {
-        const moment: Moment = {
-          timestamp: momentQuery.timestamp,
-          index: momentQuery.index,
-          value: momentQuery.value,
-        };
-        return moment;
-      })
     };
-    hangs.push(hang);
+    return moment;
   });
 
-  return hangs;
+  return hang;
 }
+
+// export async function getHangsBlah(): Promise<Hang[]> {
+//   const { rows } = await sql`
+//       SELECT hang.hang_id,
+//              hang_moment_id,
+//              board_id,
+//              user_id,
+//              calibration,
+//              timestamp,
+//              index,
+//              value
+//       FROM hang
+//                JOIN public.hang_moment hm USING (hang_id);`;
+//
+//   const hangMoments = rows.map(row => {
+//     return {
+//       hangId: row["hang_id"],
+//       hangMomentId: row["hang_moment_id"],
+//       boardId: row["board_id"],
+//       userId: row["user_id"],
+//       calibration: row["calibration"],
+//       timestamp: row["timestamp"],
+//       index: row["index"],
+//       value: row["value"]
+//     } as HangMomentQuery;
+//   });
+//
+//   const groupByHangId = new Map<string, HangMomentQuery[]>();
+//   hangMoments.forEach((queryData) => {
+//     const existing = groupByHangId.get(queryData.hangId);
+//     if (existing) {
+//       existing.push(queryData);
+//     } else {
+//       groupByHangId.set(queryData.hangId, [queryData]);
+//     }
+//   });
+//
+//   const hangs: Hang[] = [];
+//   groupByHangId.forEach(hangQuery => {
+//     const hang: Hang = {
+//       hangId: hangQuery[0].hangId,
+//       boardId: hangQuery[0].boardId,
+//       userId: hangQuery[0].userId,
+//       calibration: hangQuery[0].calibration,
+//       timeSeries: hangQuery.map(momentQuery => {
+//         const moment: Moment = {
+//           timestamp: momentQuery.timestamp,
+//           index: momentQuery.index,
+//           value: momentQuery.value,
+//         };
+//         return moment;
+//       })
+//     };
+//     hangs.push(hang);
+//   });
+//
+//   return hangs;
+// }
 
 export async function saveHang(session: Session) {
   "use server";
@@ -113,29 +163,28 @@ export async function saveHang(session: Session) {
 
   // TODO: bulk insert, below is SUPER JANK, working with sql client
   for (let i = 0; i < session.scaleData.length - increment; i += increment) {
-    const data0 = session.scaleData[i]
-    const data1 = session.scaleData[i + 1]
-    const data2 = session.scaleData[i + 2]
-    const data3 = session.scaleData[i + 3]
-    const data4 = session.scaleData[i + 4]
-    const data5 = session.scaleData[i + 5]
-    const data6 = session.scaleData[i + 6]
-    const data7 = session.scaleData[i + 7]
-    const data8 = session.scaleData[i + 8]
-    const data9 = session.scaleData[i + 9]
+    const data0 = session.scaleData[i];
+    const data1 = session.scaleData[i + 1];
+    const data2 = session.scaleData[i + 2];
+    const data3 = session.scaleData[i + 3];
+    const data4 = session.scaleData[i + 4];
+    const data5 = session.scaleData[i + 5];
+    const data6 = session.scaleData[i + 6];
+    const data7 = session.scaleData[i + 7];
+    const data8 = session.scaleData[i + 8];
+    const data9 = session.scaleData[i + 9];
     await client.sql`
         INSERT INTO hang_moment (hang_id, timestamp, index, value)
-        VALUES 
-            (${hangId}, ${data0.date.toISOString()}, ${data0.index}, ${data0.value}),
-            (${hangId}, ${data1.date.toISOString()}, ${data1.index}, ${data1.value}),
-            (${hangId}, ${data2.date.toISOString()}, ${data2.index}, ${data2.value}),
-            (${hangId}, ${data3.date.toISOString()}, ${data3.index}, ${data3.value}),
-            (${hangId}, ${data4.date.toISOString()}, ${data4.index}, ${data4.value}),
-            (${hangId}, ${data5.date.toISOString()}, ${data5.index}, ${data5.value}),
-            (${hangId}, ${data6.date.toISOString()}, ${data6.index}, ${data6.value}),
-            (${hangId}, ${data7.date.toISOString()}, ${data7.index}, ${data7.value}),
-            (${hangId}, ${data8.date.toISOString()}, ${data8.index}, ${data8.value}),
-            (${hangId}, ${data9.date.toISOString()}, ${data9.index}, ${data9.value});
+        VALUES (${hangId}, ${data0.date.toISOString()}, ${data0.index}, ${data0.value}),
+               (${hangId}, ${data1.date.toISOString()}, ${data1.index}, ${data1.value}),
+               (${hangId}, ${data2.date.toISOString()}, ${data2.index}, ${data2.value}),
+               (${hangId}, ${data3.date.toISOString()}, ${data3.index}, ${data3.value}),
+               (${hangId}, ${data4.date.toISOString()}, ${data4.index}, ${data4.value}),
+               (${hangId}, ${data5.date.toISOString()}, ${data5.index}, ${data5.value}),
+               (${hangId}, ${data6.date.toISOString()}, ${data6.index}, ${data6.value}),
+               (${hangId}, ${data7.date.toISOString()}, ${data7.index}, ${data7.value}),
+               (${hangId}, ${data8.date.toISOString()}, ${data8.index}, ${data8.value}),
+               (${hangId}, ${data9.date.toISOString()}, ${data9.index}, ${data9.value});
     `;
   }
 
