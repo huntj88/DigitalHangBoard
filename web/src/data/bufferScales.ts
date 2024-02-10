@@ -1,8 +1,8 @@
-import { bufferTime, filter, map, Observable, OperatorFunction } from "rxjs";
-import { ScaleData } from "@/bluetooth/BluetoothManager";
+import { Observable, OperatorFunction } from "rxjs";
+import { ScaleDataWeight } from "@/bluetooth/BluetoothManager";
 
-export function bufferScales(): OperatorFunction<ScaleData, ScaleData[]>  {
-  let buffer: ScaleData[] = []
+export function bufferScales(): OperatorFunction<ScaleDataWeight, ScaleDataWeight[]>  {
+  let buffer: ScaleDataWeight[] = []
   return (source) =>
     new Observable((destination) => {
       source.subscribe({

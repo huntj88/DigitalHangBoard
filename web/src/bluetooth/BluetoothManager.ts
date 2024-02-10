@@ -36,11 +36,15 @@ export class BluetoothManager {
     );
   }
 
+  public getCalibrationObservable(): Observable<number[]> {
+    return this.calibrationSubject.asObservable();
+  }
+
   public isConnected(): Observable<boolean> {
     return this.connectedSubject.asObservable();
   }
 
-  public getScaleObservable(options?: ScaleObservableOptions): Observable<ScaleData> {
+  public getScaleObservable(options?: ScaleObservableOptions): Observable<ScaleDataWeight> {
     const scaleDataByIndexOrAll = (): Observable<ScaleData> => {
       if (options?.index !== undefined) {
         return this.scaleSubject
@@ -51,15 +55,9 @@ export class BluetoothManager {
       }
     };
 
-    if (options?.unit === undefined) {
-      return scaleDataByIndexOrAll();
-    } else if (options.unit === WeightUnit.Pounds) {
-      return this.calibrationSubject.asObservable().pipe(calibration =>
-        convertToPounds(scaleDataByIndexOrAll(), calibration)
-      );
-    } else {
-      throw new Error(`weight unit ${options.unit} not supported`);
-    }
+    return this.calibrationSubject.asObservable().pipe(calibration =>
+      convertToPounds(scaleDataByIndexOrAll(), calibration)
+    );
   }
 
   private async getCalibrationData(): Promise<void> {
@@ -85,23 +83,22 @@ export class BluetoothManager {
 }
 
 export type ScaleObservableOptions = {
-  index?: number,
-  unit?: WeightUnit
+  index?: number
 }
 
-export enum WeightUnit {
-  Kilograms,
-  Pounds,
-}
-
-export type ScaleData = {
-  index?: number;
+export interface ScaleData {
+  index: number;
   value: number;
   date: Date;
-};
+}
+
+// todo: interfaces +=1 that tack on the next item?
+export interface ScaleDataWeight extends ScaleData {
+  weightPounds: number;
+}
 
 export type ScaleSumData = {
-  value: number;
+  weightPounds: number;
   date: Date;
   scale0: number;
   scale1: number;

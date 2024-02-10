@@ -23,7 +23,6 @@ import { useBluetoothContext } from "@/bluetooth/BluetoothProvider";
 import { ChartJSOrUndefined } from "react-chartjs-2/dist/types";
 import { sumScales } from "@/data/sumScales";
 import { map, Observable } from "rxjs";
-import { ScaleData, WeightUnit } from "@/bluetooth/BluetoothManager";
 
 ChartJS.register(
   CategoryScale,
@@ -122,14 +121,13 @@ export const LiveGraphAverage = () => {
   return (
     <>
       {bluetoothManager && <LiveGraph refs={counterRef} data={bluetoothManager
-        .getScaleObservable({ unit: WeightUnit.Pounds })
+        .getScaleObservable()
         .pipe(sumScales)
         .pipe(map((value, index) => {
-          let data: ScaleData = {
-            value: value.value,
+          return {
+            value: value.weightPounds,
             date: value.date
           };
-          return data;
         }))
       }
       />}
@@ -150,7 +148,14 @@ export const LiveGraphIndex = (props: { index: number }) => {
   );
 };
 
-export const LiveGraph = (props: { refs: MutableRefObject<number>, data: Observable<ScaleData> }) => {
+
+
+type LiveGraphProps = {
+  refs: MutableRefObject<number>,
+  data: Observable<{value: number, date: Date}>
+}
+
+export const LiveGraph = (props: LiveGraphProps) => {
   console.log("live graph");
   const styles = useStyles();
   const xyDataRef = useRef<{ x: number, y: number }[]>([]);

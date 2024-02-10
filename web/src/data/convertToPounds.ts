@@ -1,7 +1,7 @@
 import { combineLatestWith, map, Observable } from "rxjs";
-import { ScaleData } from "@/bluetooth/BluetoothManager";
+import { ScaleData, ScaleDataWeight } from "@/bluetooth/BluetoothManager";
 
-export function convertToPounds(dataFromAllScales: Observable<ScaleData>, calibrationData: Observable<number[]>): Observable<ScaleData> {
+export function convertToPounds(dataFromAllScales: Observable<ScaleData>, calibrationData: Observable<number[]>): Observable<ScaleDataWeight> {
   // y = mx + b, b is always 0
   const combined: Observable<[ScaleData, number[]]> = dataFromAllScales
     .pipe(combineLatestWith(calibrationData));
@@ -10,10 +10,10 @@ export function convertToPounds(dataFromAllScales: Observable<ScaleData>, calibr
     map(scaleAndCalibrationData => {
       const scaleData = scaleAndCalibrationData[0];
       const calibrationData = scaleAndCalibrationData[1];
-      const m = calibrationData[scaleData.index!];
+      const m = calibrationData[scaleData.index];
       return {
         ...scaleData,
-        value: scaleData.value * m
+        weightPounds: scaleData.value * m
       };
     })
   );

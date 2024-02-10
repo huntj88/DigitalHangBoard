@@ -1,12 +1,13 @@
-import { BluetoothManager, ScaleData, WeightUnit } from "@/bluetooth/BluetoothManager";
+import { BluetoothManager, ScaleDataWeight } from "@/bluetooth/BluetoothManager";
 import { sumScales } from "@/data/sumScales";
 import { Observable, Subject, Subscription } from "rxjs";
 import { v4 as uuid } from "uuid";
 
 export type Session = {
   id: string,
-  scaleData: ScaleData[],
+  scaleData: ScaleDataWeight[],
   active: boolean
+  calibration: number[]
   // TODO: calibration data
 }
 
@@ -14,10 +15,11 @@ export class SessionManager {
   private sessionSubject = new Subject<Session>();
   private lastTimeBelowMinLimit: Date = new Date();
   private lastTimeAboveMinLimit: Date = new Date();
-  private last200BeforeActive: ScaleData[] = [];
+  private last200BeforeActive: ScaleDataWeight[] = [];
   private sessionStartEndWeight = 5;
 
   public sessions: Map<string, Session> = new Map<string, Session>();
+  public currentCalibration: number[] = [];
   public recentId: string | undefined = undefined;
 
   /**
@@ -28,6 +30,16 @@ export class SessionManager {
   }
 
   public subscribeProvider(bluetoothManager: BluetoothManager): Subscription[] {
+    const calibrationSubscription = bluetoothManager.getCalibrationObservable()
+      .subscribe({
+        next: (calibration) => {
+          this.currentCalibration = calibration;
+        },
+        error: (e) => console.error(e),
+        complete: () => console.info("SessionManager calibration observable complete")
+      });
+
+
     const scaleDataSubscription = bluetoothManager
       .getScaleObservable()
       .subscribe({
@@ -43,14 +55,15 @@ export class SessionManager {
           }
         },
         error: (e) => console.error(e),
-        complete: () => console.info("SessionManager complete")
+        complete: () => console.info("SessionManager scaleData observable complete")
       });
 
     const createNewSession = () => {
       const session = {
         id: uuid(),
         scaleData: [...this.last200BeforeActive],
-        active: true
+        active: true,
+        calibration: this.currentCalibration
       };
       this.last200BeforeActive = [];
       this.sessions.set(session.id, session);
@@ -59,11 +72,11 @@ export class SessionManager {
     };
 
     const sessionStartSubscription = bluetoothManager
-      .getScaleObservable({ unit: WeightUnit.Pounds })
+      .getScaleObservable()
       .pipe(sumScales)
       .subscribe({
         next: (data) => {
-          if (data.value < this.sessionStartEndWeight) {
+          if (data.weightPounds < this.sessionStartEndWeight) {
             this.lastTimeBelowMinLimit = new Date();
           } else {
             this.lastTimeAboveMinLimit = new Date();
@@ -85,7 +98,7 @@ export class SessionManager {
         complete: () => console.info("SessionManager complete")
       });
 
-    return [scaleDataSubscription, sessionStartSubscription];
+    return [scaleDataSubscription, sessionStartSubscription, calibrationSubscription];
   }
 }
 

@@ -168,7 +168,7 @@ export const SessionGraph = (props: { session: Session, saveHang: () => void }) 
 
   // TODO: represent time difference between measurements? log error if range of sampling time is too large?
   let data = lineData(scaleState.map(data => {
-    return { x: data.date.getTime(), y: data.value };
+    return { x: data.date.getTime(), y: data.weightPounds };
   }));
   return (
     <div className={styles.graph}>

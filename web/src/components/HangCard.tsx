@@ -10,7 +10,7 @@ import {
 import { Card, CardHeader } from "@fluentui/react-components";
 import { Hang, Moment } from "@/app/server/hang";
 import { Session } from "@/session/SessionManager";
-import { ScaleData } from "@/bluetooth/BluetoothManager";
+import { ScaleDataWeight } from "@/bluetooth/BluetoothManager";
 import { SessionGraph } from "@/components/SessionGraph";
 
 const resolveAsset = (asset: string) => {
@@ -54,38 +54,44 @@ const useStyles = makeStyles({
 });
 
 export const HangCard = (props: { hang: Hang }) => {
-  const sessionData: ScaleData[] = props.hang.timeSeries
+  const calibration = props.hang.calibration.split(",").map(x => Number(x));
+  const sessionData: ScaleDataWeight[] = props.hang.timeSeries
       ?.map(moment => {
         return [
           {
             index: 0,
             value: moment.scale0,
-            date: moment.timestamp
+            date: moment.timestamp,
+            weightPounds: moment.scale0 * calibration[0],
           },
           {
             index: 1,
             value: moment.scale1,
-            date: moment.timestamp
+            date: moment.timestamp,
+            weightPounds: moment.scale1 * calibration[1],
           },
           {
             index: 2,
             value: moment.scale2,
-            date: moment.timestamp
+            date: moment.timestamp,
+            weightPounds: moment.scale2 * calibration[2],
           },
           {
             index: 3,
             value: moment.scale3,
-            date: moment.timestamp
+            date: moment.timestamp,
+            weightPounds: moment.scale3 * calibration[3],
           }];
       })
       ?.reduce((previousValue, currentValue, _0, _1) => {
         return previousValue.concat(currentValue);
       })
     ?? [];
-  const s: Session = {
+  const session: Session = {
     active: false,
     id: props.hang.hangId.toString(),
-    scaleData: sessionData
+    scaleData: sessionData,
+    calibration: calibration
   };
 
   const styles = useStyles();
@@ -96,8 +102,6 @@ export const HangCard = (props: { hang: Hang }) => {
     const startTime = props.hang.timeSeries[0].timestamp.getTime();
     const endTime = props.hang.timeSeries[props.hang.timeSeries.length - 1].timestamp.getTime();
     elapsedSeconds = (endTime - startTime) / 1000;
-
-    const calibrationArray = props.hang.calibration.split(",").map(x => Number(x));
 
     const calculateWeight = (moment: Moment) => {
       const pounds0 = moment.scale0; // * calibrationArray[0];
@@ -142,8 +146,7 @@ export const HangCard = (props: { hang: Hang }) => {
           </div>
         }
       />
-
-      <SessionGraph session={s} saveHang={() => {
+      <SessionGraph session={session} saveHang={() => {
       }} />
 
       <footer className={mergeClasses(styles.flex, styles.cardFooter)}>
