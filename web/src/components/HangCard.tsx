@@ -52,6 +52,13 @@ const useStyles = makeStyles({
 
 export const HangCard = (props: { hang: Hang }) => {
   const styles = useStyles();
+  let elapsedSeconds = 0;
+  console.log("card", props.hang);
+  if (props.hang.timeSeries && props.hang.timeSeries.length > 0) {
+    const startTime = props.hang.timeSeries[0].timestamp.getTime()
+    const endTime = props.hang.timeSeries[props.hang.timeSeries.length - 1].timestamp.getTime()
+    elapsedSeconds = (endTime - startTime) / 1000;
+  }
 
   return (
     <Card className={styles.card} size={"small"}>
@@ -72,7 +79,7 @@ export const HangCard = (props: { hang: Hang }) => {
         description={
           <div>
             <p>date: {props.hang.createdAt.toString()}</p>
-            <p>duration: 10 seconds</p>
+            <p>duration: {elapsedSeconds} seconds</p>
             <p>max weight: 120 pounds</p>
           </div>
         }

@@ -127,7 +127,7 @@ export const LiveGraphAverage = () => {
         .pipe(map((value, index) => {
           let data: ScaleData = {
             value: value.value,
-            date: value.earlierMeasurement // TODO
+            date: value.date
           };
           return data;
         }))

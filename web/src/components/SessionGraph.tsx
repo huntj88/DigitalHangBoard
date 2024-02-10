@@ -23,7 +23,7 @@ import { Session } from "@/session/SessionManager";
 import { useSessionContext } from "@/session/SessionProvider";
 import { from, groupBy, toArray } from "rxjs";
 import { sumScales } from "@/data/sumScales";
-import { ScaleAverageData, ScaleData } from "@/bluetooth/BluetoothManager";
+import { ScaleSumData, ScaleData } from "@/bluetooth/BluetoothManager";
 import { Button } from "@fluentui/react-button";
 
 ChartJS.register(
@@ -151,7 +151,7 @@ export const SessionGraphWrapper = (props: { saveHang: (session: Session) => voi
 export const SessionGraph = (props: { session: Session, saveHang: () => void }) => {
   const styles = useStyles();
   const [sessionId, setSessionId] = useState<string>();
-  const [scaleState, setScaleState] = useState<ScaleAverageData[]>([]);
+  const [scaleState, setScaleState] = useState<ScaleSumData[]>([]);
   if (sessionId != props.session.id) {
     setScaleState([]);
     setSessionId(props.session.id);
@@ -168,7 +168,7 @@ export const SessionGraph = (props: { session: Session, saveHang: () => void }) 
 
   // TODO: represent time difference between measurements? log error if range of sampling time is too large?
   let data = lineData(scaleState.map(data => {
-    return { x: data.earlierMeasurement.getTime(), y: data.value };
+    return { x: data.date.getTime(), y: data.value };
   }));
   return (
     <div className={styles.graph}>

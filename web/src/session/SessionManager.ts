@@ -1,19 +1,21 @@
 import { BluetoothManager, ScaleData, WeightUnit } from "@/bluetooth/BluetoothManager";
 import { sumScales } from "@/data/sumScales";
-import { Observable, Subject, Subscription } from "rxjs";
+import { from, map, Observable, Subject, Subscription } from "rxjs";
 import { v4 as uuid } from "uuid";
+import { Hang } from "@/app/server/hang";
 
 export type Session = {
   id: string,
   scaleData: ScaleData[],
   active: boolean
 }
+
 export class SessionManager {
   private sessionSubject = new Subject<Session>();
   private lastTimeBelowMinLimit: Date = new Date();
   private lastTimeAboveMinLimit: Date = new Date();
   private last200BeforeActive: ScaleData[] = [];
-  private sessionStartEndWeight = 5
+  private sessionStartEndWeight = 5;
 
   public sessions: Map<string, Session> = new Map<string, Session>();
   public recentId: string | undefined = undefined;
@@ -50,7 +52,7 @@ export class SessionManager {
         scaleData: [...this.last200BeforeActive],
         active: true
       };
-      this.last200BeforeActive = []
+      this.last200BeforeActive = [];
       this.sessions.set(session.id, session);
       this.recentId = session.id;
       this.sessionSubject.next(session);
@@ -86,8 +88,9 @@ export class SessionManager {
     return [scaleDataSubscription, sessionStartSubscription];
   }
 }
+
 function dateIsOlderThan(date: Date, milliseconds: number): boolean {
-  return date.getTime() + milliseconds < new Date().getTime()
+  return date.getTime() + milliseconds < new Date().getTime();
 }
 
 // TODO: only allow one bluetooth connection,

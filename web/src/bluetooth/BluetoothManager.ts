@@ -100,8 +100,11 @@ export type ScaleData = {
   date: Date;
 };
 
-export type ScaleAverageData = {
+export type ScaleSumData = {
   value: number;
-  earlierMeasurement: Date,
-  latestMeasurement: Date
+  date: Date;
+  scale0: number;
+  scale1: number;
+  scale2: number;
+  scale3: number;
 };

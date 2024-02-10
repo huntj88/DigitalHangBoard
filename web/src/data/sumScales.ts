@@ -1,8 +1,8 @@
 import { map, Observable } from "rxjs";
-import { ScaleAverageData, ScaleData } from "@/bluetooth/BluetoothManager";
+import { ScaleSumData, ScaleData } from "@/bluetooth/BluetoothManager";
 import { bufferScales } from "@/data/bufferScales";
 
-export function sumScales(dataFromAllScales: Observable<ScaleData>): Observable<ScaleAverageData> {
+export function sumScales(dataFromAllScales: Observable<ScaleData>): Observable<ScaleSumData> {
   return dataFromAllScales.pipe(
     bufferScales(),
     map((buffered) => {
@@ -23,8 +23,11 @@ export function sumScales(dataFromAllScales: Observable<ScaleData>): Observable<
       const scaleTotal = scale0 + scale1 + scale2 + scale3;
       return {
         value: scaleTotal,
-        earlierMeasurement: buffered[0].date,
-        latestMeasurement: buffered[buffered.length - 1].date
+        date: buffered[0].date,
+        scale0,
+        scale1,
+        scale2,
+        scale3
       };
     }),
   );
