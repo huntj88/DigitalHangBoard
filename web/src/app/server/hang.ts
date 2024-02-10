@@ -5,6 +5,12 @@ import { from } from "rxjs";
 import { sumScales } from "@/data/sumScales";
 import { ScaleSumData } from "@/bluetooth/BluetoothManager";
 
+// would be fun to assign a score to each hang.
+// integral of hang curve, split into horizontal layers, each layer applying a y-axis height multiplier to the integral result for that layer.
+// sum up each layer to get score
+
+// so a bunch of integrals of the hang curve with upper and lower bounds that make up the horizontal layers
+
 type HangMomentQuery = {
   // todo: actual types instead of strings
   hangId: string
@@ -17,15 +23,6 @@ type HangMomentQuery = {
   value: string
 }
 
-// type HangQuery = {
-//   // todo: actual types instead of strings
-//   hangId: string
-//   boardId: string
-//   userId: string
-//   createdAt: string
-//   calibration: string
-// }
-
 export type Hang = {
   // todo: actual types instead of strings
   hangId: number
@@ -37,7 +34,6 @@ export type Hang = {
 }
 
 export type Moment = {
-  // todo: actual types instead of strings
   timestamp: Date;
   total: number;
   scale0: number;
@@ -53,7 +49,8 @@ export async function getHangs(): Promise<Hang[]> {
              user_id,
              calibration,
              created_at
-      FROM hang;`;
+      FROM hang
+      ORDER BY created_at DESC;`;
 
   return rows.map(row => {
     const hang: Hang = {

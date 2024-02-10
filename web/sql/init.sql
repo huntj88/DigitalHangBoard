@@ -23,6 +23,8 @@ CREATE TABLE hang
     board_id    int          not null REFERENCES board (board_id) ON DELETE RESTRICT,
     created_at  timestamptz  not null DEFAULT CURRENT_TIMESTAMP,
     calibration varchar(100) not null -- todo: length
+--     elapsedMillis
+--     maxWeight
 );
 
 CREATE TABLE hang_moment

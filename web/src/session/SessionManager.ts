@@ -1,13 +1,13 @@
 import { BluetoothManager, ScaleData, WeightUnit } from "@/bluetooth/BluetoothManager";
 import { sumScales } from "@/data/sumScales";
-import { from, map, Observable, Subject, Subscription } from "rxjs";
+import { Observable, Subject, Subscription } from "rxjs";
 import { v4 as uuid } from "uuid";
-import { Hang } from "@/app/server/hang";
 
 export type Session = {
   id: string,
   scaleData: ScaleData[],
   active: boolean
+  // TODO: calibration data
 }
 
 export class SessionManager {

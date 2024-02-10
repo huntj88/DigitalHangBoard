@@ -21,9 +21,9 @@ import { Line } from "react-chartjs-2";
 // @ts-ignore
 import { Session } from "@/session/SessionManager";
 import { useSessionContext } from "@/session/SessionProvider";
-import { from, groupBy, toArray } from "rxjs";
+import { from } from "rxjs";
 import { sumScales } from "@/data/sumScales";
-import { ScaleSumData, ScaleData } from "@/bluetooth/BluetoothManager";
+import { ScaleSumData } from "@/bluetooth/BluetoothManager";
 import { Button } from "@fluentui/react-button";
 
 ChartJS.register(
@@ -105,7 +105,7 @@ export const lineData = (
 
 const useStyles = makeStyles({
   graph: {
-    width: "100vw",
+    width: "90vw",
     height: "80vh"
   }
 });
