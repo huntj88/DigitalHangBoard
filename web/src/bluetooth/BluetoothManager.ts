@@ -17,7 +17,7 @@ export class BluetoothManager {
       this.connectedSubject.next(isConnected);
     });
     await this.platform.connect();
-    await this.getCalibrationData();
+    await this.readCalibrationData();
     await this.platform.addCharacteristicIntEventListener(
       "scale0",
       this.getEventCallback(0)
@@ -60,7 +60,7 @@ export class BluetoothManager {
     );
   }
 
-  private async getCalibrationData(): Promise<void> {
+  private async readCalibrationData(): Promise<void> {
     const value = await this.platform.getCharacteristicStringValue("calibration");
     const calibrationArray = value.split(",").map(x => Number(x));
     console.log("calibration", calibrationArray);
