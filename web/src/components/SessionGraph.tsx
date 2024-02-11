@@ -148,7 +148,7 @@ export const SessionGraphWrapper = (props: { saveHang: (session: Session) => voi
   );
 };
 
-export const SessionGraph = (props: { session: Session, saveHang: () => void }) => {
+export const SessionGraph = (props: { session: Session, saveHang?: () => void }) => {
   const styles = useStyles();
   const [sessionId, setSessionId] = useState<string>();
   const [scaleState, setScaleState] = useState<ScaleSumData[]>([]);
@@ -173,8 +173,8 @@ export const SessionGraph = (props: { session: Session, saveHang: () => void }) 
   return (
     <div className={styles.graph}>
       {/* option/data refs are used to prevent re-rendering <Line>, prefer to update chart data via lineRef */}
-      <Line options={options()} data={data} />;
-      <Button onClick={props.saveHang}>Save</Button>
+      <Line options={options()} data={data} />
+      {props.saveHang && <Button onClick={props.saveHang}>Save</Button>}
     </div>
   );
 };

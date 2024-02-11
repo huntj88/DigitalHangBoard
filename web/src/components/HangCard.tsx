@@ -4,7 +4,6 @@ import * as React from "react";
 import {
   makeStyles,
   shorthands,
-  mergeClasses,
   Text
 } from "@fluentui/react-components";
 import { Card, CardHeader } from "@fluentui/react-components";
@@ -87,8 +86,7 @@ export const HangCard = (props: { hang: Hang }) => {
           </div>
         }
       />
-      <SessionGraph session={session} saveHang={() => {
-      }} />
+      <SessionGraph session={session} />
       <br/>
     </Card>
   );
