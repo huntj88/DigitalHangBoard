@@ -110,8 +110,8 @@ const useStyles = makeStyles({
     height: "fit-content"
   },
   graph: {
-    width: "90vw",
-    height: "80vh"
+    minWidth: "20vw",
+    minHeight: "20vw"
   }
 });
 
@@ -159,7 +159,7 @@ export const SessionGraphWrapper = (props: { saveHang: (userId: string, session:
   );
 };
 
-export const SessionGraph = (props: { session: Session, saveHang?: () => void }) => {
+export const SessionGraph = (props: { session: Session, graphSizeOverride?: string, saveHang?: () => void }) => {
   const styles = useStyles();
   const [sessionId, setSessionId] = useState<string>();
   const [scaleState, setScaleState] = useState<ScaleSumData[]>([]);
@@ -183,7 +183,7 @@ export const SessionGraph = (props: { session: Session, saveHang?: () => void })
   }));
   return (
     <div>
-      <div className={styles.graph}>
+      <div className={props.graphSizeOverride ?? styles.graph}>
         {/* option/data refs are used to prevent re-rendering <Line>, prefer to update chart data via lineRef */}
         <Line options={options()} data={data} />
       </div>

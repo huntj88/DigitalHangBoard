@@ -30,10 +30,18 @@ export type Moment = {
   scale3: number;
 }
 
+export async function getHang(hangId: number): Promise<Hang> {
+  const client = await sql.connect();
+  const hang = await getHangInternal(client, hangId);
+  const hangWithTimeSeries = await loadFullTimeSeriesInteral(client, hang);
+  client.release();
+  return hangWithTimeSeries;
+}
+
 export async function getHangs(userId: string): Promise<Hang[]> {
   const client = await sql.connect();
   const hangs = await getHangsInternal(client, userId);
-  const hangsWithTimeSeries = await loadTimeSeriesInternal(client, hangs);
+  const hangsWithTimeSeries = await loadPreviewTimeSeriesInternal(client, hangs);
   client.release();
   return hangsWithTimeSeries;
 }
@@ -62,21 +70,50 @@ async function getHangsInternal(client: VercelPoolClient, userId: string): Promi
   });
 }
 
-async function loadTimeSeriesInternal(client: VercelPoolClient, hangs: Hang[]): Promise<Hang[]> {
+async function getHangInternal(client: VercelPoolClient, hangId: number): Promise<Hang> {
+  const { rows } = await client.sql`
+      SELECT hang_id,
+             board_id,
+             user_id,
+             calibration,
+             created_at
+      FROM hang
+      WHERE hang_id = ${hangId};`;
+
+  const row = rows[0];
+  return {
+    hangId: row["hang_id"],
+    boardId: row["board_id"],
+    userId: row["user_id"],
+    createdAt: row["created_at"],
+    calibration: row["calibration"].split(",").map((x: string) => Number(x)),
+    timeSeries: []
+  };
+}
+
+async function loadPreviewTimeSeriesInternal(client: VercelPoolClient, hangs: Hang[]): Promise<Hang[]> {
   const hangMap = new Map<number, Hang>();
   hangs.forEach(hang => hangMap.set(hang.hangId, hang));
 
   const { rows } = await client.query(`
-      SELECT hang_id,
-             timestamp,
-             weight_pounds,
-             scale0,
-             scale1,
-             scale2,
-             scale3
+      SELECT date_bin(
+                 -- return fewer data points for preview          
+                     INTERVAL '800 millisecond',
+                     hang_moment.timestamp,
+                     TIMESTAMPTZ '2000-01-01'
+             ),
+             hang_id,
+             max(timestamp)     AS timestamp,
+             max(weight_pounds) as weight_pounds,
+             max(scale0)        as scale0,
+             max(scale1)        as scale1,
+             max(scale2)        as scale2,
+             max(scale3)        as scale3
       FROM hang_moment
       -- unsafe, but the hangIds come from the results of a different query
-      WHERE hang_id IN (${hangs.map(hang => hang.hangId)});
+      WHERE hang_id IN (${hangs.map(hang => hang.hangId)})
+      GROUP BY hang_id, 1
+      ORDER BY timestamp;
   `, []);
 
   rows.forEach(row => {
@@ -94,6 +131,33 @@ async function loadTimeSeriesInternal(client: VercelPoolClient, hangs: Hang[]): 
   });
 
   return hangs;
+}
+
+async function loadFullTimeSeriesInteral(client: VercelPoolClient, hang: Hang): Promise<Hang> {
+  const { rows } = await client.sql`
+      SELECT timestamp,
+             weight_pounds,
+             scale0,
+             scale1,
+             scale2,
+             scale3
+      FROM hang_moment
+      WHERE hang_id = ${hang.hangId};
+  `;
+
+  hang.timeSeries = rows.map(row => {
+    const moment: Moment = {
+      timestamp: row["timestamp"],
+      weightPounds: row["weight_pounds"],
+      scale0: row["scale0"],
+      scale1: row["scale1"],
+      scale2: row["scale2"],
+      scale3: row["scale3"]
+    };
+    return moment;
+  });
+
+  return hang;
 }
 
 export async function saveHang(

@@ -10,6 +10,7 @@ import { Card, CardHeader } from "@fluentui/react-components";
 import { Hang } from "@/app/server/hang";
 import { SessionGraph } from "@/components/SessionGraph";
 import { hangToSession } from "@/data/hangToSession";
+import Link from "next/link";
 
 const resolveAsset = (asset: string) => {
   const ASSET_URL =
@@ -21,10 +22,11 @@ const resolveAsset = (asset: string) => {
 const useStyles = makeStyles({
   main: {
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
     flexWrap: "wrap",
     columnGap: "16px",
-    rowGap: "36px"
+    rowGap: "36px",
+    justifyContent: "space-evenly"
   },
 
   card: {
@@ -42,10 +44,10 @@ const useStyles = makeStyles({
   appIcon: {
     ...shorthands.borderRadius("4px"),
     height: "32px"
-  },
+  }
 });
 
-export const HangCard = (props: { hang: Hang }) => {
+export const HangCard = (props: { hang: Hang, graphSizeOverride?: string }) => {
   const session = hangToSession(props.hang);
   const styles = useStyles();
 
@@ -64,31 +66,33 @@ export const HangCard = (props: { hang: Hang }) => {
   }
 
   return (
-    <Card className={styles.card} size={"small"}>
-      <header className={styles.flex}>
-        <img
-          className={styles.appIcon}
-          src={resolveAsset("logo.svg")}
-          alt="Application one logo"
-        />
-      </header>
+    <Link href={`/nav/connected/${props.hang.hangId}`}>
+      <Card className={styles.card} size={"small"}>
+        <header className={styles.flex}>
+          <img
+            className={styles.appIcon}
+            src={resolveAsset("logo.svg")}
+            alt="Application one logo"
+          />
+        </header>
 
-      <CardHeader
-        header={
-          <Text weight="semibold">
-            {props.hang.userId}
-          </Text>
-        }
-        description={
-          <div>
-            <p>date: {props.hang.createdAt.toString()}</p>
-            <p>max weight: {maxWeightPounds} pounds</p>
-          </div>
-        }
-      />
-      <SessionGraph session={session} />
-      <br/>
-    </Card>
+        <CardHeader
+          header={
+            <Text weight="semibold">
+              {props.hang.userId}
+            </Text>
+          }
+          description={
+            <div>
+              <p>date: {props.hang.createdAt.toString()}</p>
+              <p>max weight: {maxWeightPounds} pounds</p>
+            </div>
+          }
+        />
+        <SessionGraph session={session} graphSizeOverride={props.graphSizeOverride} />
+        <br />
+      </Card>
+    </Link>
   );
 };
 

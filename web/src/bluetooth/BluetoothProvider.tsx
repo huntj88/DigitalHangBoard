@@ -2,11 +2,10 @@
 
 import {
   createContext,
-  ReactNode,
   useContext,
   useEffect,
   useMemo,
-  useState,
+  useState
 } from "react";
 import { BluetoothManager } from "@/bluetooth/BluetoothManager";
 import { ChildrenProp } from "@/components/util";
@@ -16,7 +15,7 @@ const BluetoothContext = createContext<{
   isConnected: boolean;
 }>({
   bluetoothManager: new BluetoothManager(),
-  isConnected: false,
+  isConnected: false
 });
 
 export const BluetoothProvider = ({ children }: ChildrenProp) => {
@@ -25,9 +24,12 @@ export const BluetoothProvider = ({ children }: ChildrenProp) => {
 
   useEffect(() => {
     const subscription = bluetoothManager.isConnected().subscribe({
-      next: (isConnected) => setIsConnected(isConnected),
+      next: (isConnected) => {
+        console.log("bluetooth connected: ", isConnected);
+        setIsConnected(isConnected);
+      },
       error: (e) => console.error("bluetooth isConnected", e),
-      complete: () => console.info("bluetooth isConnected complete"),
+      complete: () => console.info("bluetooth isConnected complete")
     });
 
     return () => subscription.unsubscribe();
