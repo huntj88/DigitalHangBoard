@@ -11,26 +11,14 @@ import { ScaleSumData } from "@/bluetooth/BluetoothManager";
 
 // so a bunch of integrals of the hang curve with upper and lower bounds that make up the horizontal layers
 
-type HangMomentQuery = {
-  // todo: actual types instead of strings
-  hangId: string
-  hangMomentId: string
-  boardId: string
-  userId: string
-  calibration: string
-  timestamp: string
-  index: string
-  value: string
-}
-
 export type Hang = {
   // todo: actual types instead of strings
   hangId: number
   boardId: number
   userId: string
   createdAt: Date
-  calibration: string
-  timeSeries?: Moment[]
+  calibration: number[]
+  timeSeries: Moment[]
 }
 
 export type Moment = {
@@ -42,7 +30,12 @@ export type Moment = {
   scale3: number;
 }
 
-export async function getHangs(): Promise<Hang[]> {
+export async function getHangs(userId: string): Promise<Hang[]> {
+  const hangs = await getHangsInternal(userId);
+  return await loadTimeSeriesInternal(hangs);
+}
+
+async function getHangsInternal(userId: string): Promise<Hang[]> {
   const { rows } = await sql`
       SELECT hang_id,
              board_id,
@@ -50,6 +43,7 @@ export async function getHangs(): Promise<Hang[]> {
              calibration,
              created_at
       FROM hang
+      WHERE user_id = ${userId}
       ORDER BY created_at DESC;`;
 
   return rows.map(row => {
@@ -58,25 +52,31 @@ export async function getHangs(): Promise<Hang[]> {
       boardId: row["board_id"],
       userId: row["user_id"],
       createdAt: row["created_at"],
-      calibration: row["calibration"]
+      calibration: row["calibration"].split(",").map((x: string) => Number(x)),
+      timeSeries: []
     };
     return hang;
   });
 }
 
-export async function loadTimeSeries(hang: Hang): Promise<Hang> {
+async function loadTimeSeriesInternal(hangs: Hang[]): Promise<Hang[]> {
+  const hangMap = new Map<number, Hang>();
+  hangs.forEach(hang => hangMap.set(hang.hangId, hang));
+
   const { rows } = await sql`
-      SELECT timestamp,
+      SELECT hang_id,
+             timestamp,
              weight_pounds,
              scale0,
              scale1,
              scale2,
              scale3
       FROM hang_moment
-      WHERE hang_id = ${hang.hangId};
+      WHERE hang_id in (2, 3);
   `;
 
-  hang.timeSeries = rows.map(row => {
+  rows.forEach(row => {
+    const hangId = row["hang_id"];
     const moment: Moment = {
       timestamp: row["timestamp"],
       weightPounds: row["weight_pounds"],
@@ -85,69 +85,12 @@ export async function loadTimeSeries(hang: Hang): Promise<Hang> {
       scale2: row["scale2"],
       scale3: row["scale3"]
     };
-    return moment;
+
+    hangMap.get(hangId)?.timeSeries.push(moment);
   });
 
-  return hang;
+  return hangs;
 }
-
-// export async function getHangsBlah(): Promise<Hang[]> {
-//   const { rows } = await sql`
-//       SELECT hang.hang_id,
-//              hang_moment_id,
-//              board_id,
-//              user_id,
-//              calibration,
-//              timestamp,
-//              index,
-//              value
-//       FROM hang
-//                JOIN public.hang_moment hm USING (hang_id);`;
-//
-//   const hangMoments = rows.map(row => {
-//     return {
-//       hangId: row["hang_id"],
-//       hangMomentId: row["hang_moment_id"],
-//       boardId: row["board_id"],
-//       userId: row["user_id"],
-//       calibration: row["calibration"],
-//       timestamp: row["timestamp"],
-//       index: row["index"],
-//       value: row["value"]
-//     } as HangMomentQuery;
-//   });
-//
-//   const groupByHangId = new Map<string, HangMomentQuery[]>();
-//   hangMoments.forEach((queryData) => {
-//     const existing = groupByHangId.get(queryData.hangId);
-//     if (existing) {
-//       existing.push(queryData);
-//     } else {
-//       groupByHangId.set(queryData.hangId, [queryData]);
-//     }
-//   });
-//
-//   const hangs: Hang[] = [];
-//   groupByHangId.forEach(hangQuery => {
-//     const hang: Hang = {
-//       hangId: hangQuery[0].hangId,
-//       boardId: hangQuery[0].boardId,
-//       userId: hangQuery[0].userId,
-//       calibration: hangQuery[0].calibration,
-//       timeSeries: hangQuery.map(momentQuery => {
-//         const moment: Moment = {
-//           timestamp: momentQuery.timestamp,
-//           index: momentQuery.index,
-//           value: momentQuery.value,
-//         };
-//         return moment;
-//       })
-//     };
-//     hangs.push(hang);
-//   });
-//
-//   return hangs;
-// }
 
 export async function saveHang(session: Session) {
   "use server";
@@ -156,11 +99,12 @@ export async function saveHang(session: Session) {
   await from(session.scaleData).pipe(sumScales).forEach(x => {
     moments.push(x);
   });
+  const calibration = session.calibration.join(",");
 
   const client = await sql.connect();
   const { rows } = await client.sql`
       INSERT INTO hang (user_id, board_id, calibration)
-      VALUES ('df285c54-2dea-4b92-8974-ea522a443766', 1, '-1,-1,-1,-1')
+      VALUES ('df285c54-2dea-4b92-8974-ea522a443766', 1, '${calibration}')
       RETURNING hang_id;
   `;
   const hangId: string = rows[0]["hang_id"];
@@ -391,12 +335,12 @@ async function bulkInsert10(hangId: string, client: VercelPoolClient, scaleData:
 }
 
 async function singleInsert(hangId: string, client: VercelPoolClient, scaleData: ScaleSumData[]) {
-
   for (const data of scaleData) {
     console.log("bulk insert 1");
     await client.sql`
         INSERT INTO hang_moment (hang_id, timestamp, weight_pounds, scale0, scale1, scale2, scale3)
-        VALUES (${hangId}, ${data.date.toISOString()}, ${data.weightPounds}, ${data.scale0}, ${data.scale1}, ${data.scale2},
+        VALUES (${hangId}, ${data.date.toISOString()}, ${data.weightPounds}, ${data.scale0}, ${data.scale1},
+                ${data.scale2},
                 ${data.scale3});
     `;
   }

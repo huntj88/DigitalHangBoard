@@ -40,28 +40,18 @@ const useStyles = makeStyles({
     flexDirection: "row",
     alignItems: "center"
   },
-
   appIcon: {
     ...shorthands.borderRadius("4px"),
     height: "32px"
   },
-
-  cardFooter: {
-    alignItems: "center",
-    justifyContent: "space-between"
-  }
 });
 
 export const HangCard = (props: { hang: Hang }) => {
   const session = hangToSession(props.hang);
   const styles = useStyles();
-  let elapsedSeconds = 0;
+
   let maxWeightPounds = 0;
   if (props.hang.timeSeries && props.hang.timeSeries.length > 0) {
-    const startTime = props.hang.timeSeries[0].timestamp.getTime();
-    const endTime = props.hang.timeSeries[props.hang.timeSeries.length - 1].timestamp.getTime();
-    elapsedSeconds = (endTime - startTime) / 1000;
-
     // TODO: report on hang itself
     const max = props.hang.timeSeries.reduce((previousValue, currentValue, currentIndex, array) => {
       if (previousValue.weightPounds >= currentValue.weightPounds) {
@@ -93,18 +83,13 @@ export const HangCard = (props: { hang: Hang }) => {
         description={
           <div>
             <p>date: {props.hang.createdAt.toString()}</p>
-            <p>duration: {elapsedSeconds} seconds</p>
             <p>max weight: {maxWeightPounds} pounds</p>
           </div>
         }
       />
       <SessionGraph session={session} saveHang={() => {
       }} />
-
-      <footer className={mergeClasses(styles.flex, styles.cardFooter)}>
-        <span>Automated</span>
-        <span>3290</span>
-      </footer>
+      <br/>
     </Card>
   );
 };
