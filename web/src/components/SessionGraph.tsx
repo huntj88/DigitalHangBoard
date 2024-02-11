@@ -1,6 +1,6 @@
 "use client";
 
-import { makeStyles } from "@fluentui/react-components";
+import { Card, makeStyles } from "@fluentui/react-components";
 import "chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm";
 
 import React, { useEffect, useState } from "react";
@@ -104,6 +104,11 @@ export const lineData = (
 };
 
 const useStyles = makeStyles({
+  card: {
+    width: "fit-content",
+    maxWidth: "100%",
+    height: "fit-content"
+  },
   graph: {
     width: "90vw",
     height: "80vh"
@@ -111,6 +116,7 @@ const useStyles = makeStyles({
 });
 
 export const SessionGraphWrapper = (props: { saveHang: (userId: string, session: Session) => void }) => {
+  const styles = useStyles();
   const { sessionManager } = useSessionContext();
   const [_, setCurrentSession] = useState<Session>();
   const [previousSession, setPreviousSession] = useState<Session>();
@@ -137,16 +143,18 @@ export const SessionGraphWrapper = (props: { saveHang: (userId: string, session:
   // TODO: make a sessions hook
   return (
     <div>
-      {show ?
-        (<SessionGraph
-          session={previousSession}
-          saveHang={() => {
-            props.saveHang(
-              "df285c54-2dea-4b92-8974-ea522a443766",
-              previousSession
-            );
-          }} />)
-        : (<div>loading</div>)}
+      {show &&
+        <Card className={styles.card} size={"small"}>
+          <SessionGraph
+            session={previousSession}
+            saveHang={() => {
+              props.saveHang(
+                "df285c54-2dea-4b92-8974-ea522a443766",
+                previousSession
+              );
+            }} />
+        </Card>
+      }
     </div>
   );
 };
@@ -174,9 +182,11 @@ export const SessionGraph = (props: { session: Session, saveHang?: () => void })
     return { x: data.date.getTime(), y: data.weightPounds };
   }));
   return (
-    <div className={styles.graph}>
-      {/* option/data refs are used to prevent re-rendering <Line>, prefer to update chart data via lineRef */}
-      <Line options={options()} data={data} />
+    <div>
+      <div className={styles.graph}>
+        {/* option/data refs are used to prevent re-rendering <Line>, prefer to update chart data via lineRef */}
+        <Line options={options()} data={data} />
+      </div>
       {props.saveHang && <Button onClick={props.saveHang}>Save</Button>}
     </div>
   );

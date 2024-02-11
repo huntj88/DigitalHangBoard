@@ -1,6 +1,6 @@
 "use client";
 
-import { makeStyles } from "@fluentui/react-components";
+import { Card, makeStyles } from "@fluentui/react-components";
 import "chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm";
 
 import React, { MutableRefObject, useEffect, useRef } from "react";
@@ -109,8 +109,13 @@ export const lineData = (
 };
 
 const useStyles = makeStyles({
+  card: {
+    width: "fit-content",
+    maxWidth: "100%",
+    height: "fit-content"
+  },
   graph: {
-    width: "100vw",
+    width: "90vw",
     height: "80vh"
   }
 });
@@ -123,7 +128,7 @@ export const LiveGraphAverage = () => {
       {bluetoothManager && <LiveGraph refs={counterRef} data={bluetoothManager
         .getScaleObservable()
         .pipe(sumScales)
-        .pipe(map((value, index) => {
+        .pipe(map((value) => {
           return {
             value: value.weightPounds,
             date: value.date
@@ -149,10 +154,9 @@ export const LiveGraphIndex = (props: { index: number }) => {
 };
 
 
-
 type LiveGraphProps = {
   refs: MutableRefObject<number>,
-  data: Observable<{value: number, date: Date}>
+  data: Observable<{ value: number, date: Date }>
 }
 
 export const LiveGraph = (props: LiveGraphProps) => {
@@ -207,9 +211,12 @@ export const LiveGraph = (props: LiveGraphProps) => {
   }, [props.data, props.refs]);
 
   return (
-    <div className={styles.graph}>
-      {/* option/data refs are used to prevent re-rendering <Line>, prefer to update chart data via lineRef */}
-      <Line ref={lineRef} options={options(minXRef.current, maxYRef.current, minYRef.current)} data={lineData(xyDataRef.current)} />;
-    </div>
+    <Card className={styles.card} size={"small"}>
+      <div className={styles.graph}>
+        {/* option/data refs are used to prevent re-rendering <Line>, prefer to update chart data via lineRef */}
+        <Line ref={lineRef} options={options(minXRef.current, maxYRef.current, minYRef.current)}
+              data={lineData(xyDataRef.current)} />;
+      </div>
+    </Card>
   );
 };
