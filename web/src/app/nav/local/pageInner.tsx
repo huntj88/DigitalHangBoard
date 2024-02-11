@@ -21,7 +21,7 @@ const useStyles = makeStyles({
   }
 });
 
-export default function PageInner(props: { saveHang: (session: Session) => void }) {
+export default function PageInner(props: { saveHang: (userId: string, session: Session) => void }) {
   const styles = useStyles();
   const { isConnected } = useBluetoothContext();
 

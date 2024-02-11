@@ -31,7 +31,7 @@ export function hangToSession(hang: Hang): Session {
             weightPounds: moment.scale3 * hang.calibration[3],
           }];
       })
-      ?.reduce((previousValue, currentValue, _0, _1) => {
+      ?.reduce((previousValue, currentValue) => {
         return previousValue.concat(currentValue);
       })
     ?? [];

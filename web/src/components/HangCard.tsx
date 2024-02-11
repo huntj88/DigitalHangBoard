@@ -51,8 +51,8 @@ export const HangCard = (props: { hang: Hang }) => {
 
   let maxWeightPounds = 0;
   if (props.hang.timeSeries && props.hang.timeSeries.length > 0) {
-    // TODO: report on hang itself
-    const max = props.hang.timeSeries.reduce((previousValue, currentValue, currentIndex, array) => {
+    // TODO: read from report on hang itself/create reports that are associated with hang
+    const max = props.hang.timeSeries.reduce((previousValue, currentValue) => {
       if (previousValue.weightPounds >= currentValue.weightPounds) {
         return previousValue;
       } else {

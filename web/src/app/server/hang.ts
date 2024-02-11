@@ -31,12 +31,15 @@ export type Moment = {
 }
 
 export async function getHangs(userId: string): Promise<Hang[]> {
-  const hangs = await getHangsInternal(userId);
-  return await loadTimeSeriesInternal(hangs);
+  const client = await sql.connect();
+  const hangs = await getHangsInternal(client, userId);
+  const hangsWithTimeSeries = await loadTimeSeriesInternal(client, hangs);
+  client.release();
+  return hangsWithTimeSeries;
 }
 
-async function getHangsInternal(userId: string): Promise<Hang[]> {
-  const { rows } = await sql`
+async function getHangsInternal(client: VercelPoolClient, userId: string): Promise<Hang[]> {
+  const { rows } = await client.sql`
       SELECT hang_id,
              board_id,
              user_id,
@@ -59,11 +62,11 @@ async function getHangsInternal(userId: string): Promise<Hang[]> {
   });
 }
 
-async function loadTimeSeriesInternal(hangs: Hang[]): Promise<Hang[]> {
+async function loadTimeSeriesInternal(client: VercelPoolClient, hangs: Hang[]): Promise<Hang[]> {
   const hangMap = new Map<number, Hang>();
   hangs.forEach(hang => hangMap.set(hang.hangId, hang));
 
-  const { rows } = await sql`
+  const { rows } = await client.query(`
       SELECT hang_id,
              timestamp,
              weight_pounds,
@@ -72,8 +75,9 @@ async function loadTimeSeriesInternal(hangs: Hang[]): Promise<Hang[]> {
              scale2,
              scale3
       FROM hang_moment
-      WHERE hang_id in (2, 3);
-  `;
+      -- unsafe, but the hangIds come from the results of a different query
+      WHERE hang_id IN (${hangs.map(hang => hang.hangId)});
+  `, []);
 
   rows.forEach(row => {
     const hangId = row["hang_id"];
@@ -92,7 +96,10 @@ async function loadTimeSeriesInternal(hangs: Hang[]): Promise<Hang[]> {
   return hangs;
 }
 
-export async function saveHang(session: Session) {
+export async function saveHang(
+  userId: string,
+  session: Session
+): Promise<void> {
   "use server";
 
   const moments: ScaleSumData[] = [];
@@ -104,7 +111,7 @@ export async function saveHang(session: Session) {
   const client = await sql.connect();
   const { rows } = await client.sql`
       INSERT INTO hang (user_id, board_id, calibration)
-      VALUES ('df285c54-2dea-4b92-8974-ea522a443766', 1, '${calibration}')
+      VALUES (${userId}, 1, ${calibration})
       RETURNING hang_id;
   `;
   const hangId: string = rows[0]["hang_id"];

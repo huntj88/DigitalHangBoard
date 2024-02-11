@@ -110,7 +110,7 @@ const useStyles = makeStyles({
   }
 });
 
-export const SessionGraphWrapper = (props: { saveHang: (session: Session) => void }) => {
+export const SessionGraphWrapper = (props: { saveHang: (userId: string, session: Session) => void }) => {
   const { sessionManager } = useSessionContext();
   const [_, setCurrentSession] = useState<Session>();
   const [previousSession, setPreviousSession] = useState<Session>();
@@ -141,7 +141,10 @@ export const SessionGraphWrapper = (props: { saveHang: (session: Session) => voi
         (<SessionGraph
           session={previousSession}
           saveHang={() => {
-            props.saveHang(previousSession);
+            props.saveHang(
+              "df285c54-2dea-4b92-8974-ea522a443766",
+              previousSession
+            );
           }} />)
         : (<div>loading</div>)}
     </div>
