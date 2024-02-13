@@ -8,7 +8,8 @@ Preferences calibration;
 // error code meanings
 // 0 uncalibrated TODO
 // 1 scale read error
-
+float attemptMax = 0;
+float lastAttemptMax = 0;
 String calibrationErrors = "";
 
 void setup() {
@@ -81,7 +82,9 @@ void loop() {
       int valueForIndex = rawValues[index];
       sumWeight += calculateWeightFromValue(index, valueForIndex);
     }
-    displayValue(sumWeight);
+
+    float maxWeight = trackAndGetMaxWeight(sumWeight);
+    displayWeight(sumWeight, maxWeight);
   } else {
     Serial.println(errors);
     displayErrors(errors);
@@ -111,5 +114,20 @@ void checkForCalibrationErrors() {
       calibrationErrors += index;
       calibrationErrors += "\n";
     }
+  }
+}
+
+float trackAndGetMaxWeight(float sumWeight) {
+  if (sumWeight > attemptMax && sumWeight > 2) {
+    attemptMax = sumWeight;
+  } else if (sumWeight < 2 && attemptMax != 0) {
+    lastAttemptMax = attemptMax;
+    attemptMax = 0;
+  }
+
+  if (attemptMax != 0) {
+    return attemptMax;
+  } else {
+    return lastAttemptMax;
   }
 }

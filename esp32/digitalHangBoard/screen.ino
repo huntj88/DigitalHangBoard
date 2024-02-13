@@ -32,11 +32,11 @@ void displayErrors(String value) {
   display.display();
 }
 
-void displayValue(float value) {
+void displayWeight(float value, float max) {
   display.clearDisplay();
   display.setTextSize(4);
   display.setTextColor(SSD1306_WHITE);
-  display.setCursor(0, 15);
+  display.setCursor(0, 0);
 
   if (value > -0.1 && value < 0) {
     // prevent flickering between -0.0 and 0.0
@@ -44,6 +44,11 @@ void displayValue(float value) {
   } else {
     display.println(value, 1);
   }
+
+  display.setTextSize(2);
+  display.println();
+  display.print("Max: ");
+  display.println(max, 1);
 
   display.display();
 }
