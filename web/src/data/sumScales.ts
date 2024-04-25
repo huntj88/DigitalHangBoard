@@ -7,7 +7,7 @@ export function sumScales(dataFromAllScales: Observable<ScaleDataWeight>): Obser
     bufferScales(),
     map((buffered) => {
       const average = (array: number[]) =>
-        array.reduce((a, b) => a + b) / array.length;
+        Math.round(array.reduce((a, b) => a + b) / array.length);
       const scale0 = average(
         buffered.filter((x) => x.index == 0).map((x) => x.value)
       );

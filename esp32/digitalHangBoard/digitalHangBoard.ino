@@ -16,10 +16,10 @@ void setup() {
   Serial.begin(115200);
   calibration.begin("dhb-calibration", false);
   // calibration.clear();
-  // calibration.putFloat("scale" + 0, 0.00005);
-  // calibration.putFloat("scale" + 1, 0.0000497);
-  // calibration.putFloat("scale" + 2, 0.0000509);
-  // calibration.putFloat("scale" + 3, 0.0000514);
+  // calibration.putFloat("scale" + 0, 0.0000485);
+  // calibration.putFloat("scale" + 1, 0.0000505);
+  // calibration.putFloat("scale" + 2, 0.0000492);
+  // calibration.putFloat("scale" + 3, 0.00005);
 
   setupScreen();
 
