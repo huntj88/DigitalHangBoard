@@ -10,9 +10,8 @@ import { Card, CardHeader } from "@fluentui/react-components";
 import { Hang } from "@/app/server/hang";
 import { hangToSession } from "@/data/hangToSession";
 import Link from "next/link";
-import { ReactNode, Suspense } from "react";
+import { ReactNode } from "react";
 import { SessionGraph } from "@/components/SessionGraph";
-import { NoSSR } from "@/components/NoSSRWrapper";
 
 const resolveAsset = (asset: string) => {
   const ASSET_URL =
