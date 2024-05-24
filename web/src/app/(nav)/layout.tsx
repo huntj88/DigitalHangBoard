@@ -58,12 +58,12 @@ export default function NavLayout({ children }: ChildrenProp): ReactElement {
     <>
       <div className={styles.nav}>
         <TabList selectedValue={selectedValue} onTabSelect={onTabSelect}>
-          <Link href={"/nav/local"}>
+          <Link href={"/local"}>
             <Tab id="Local" icon={<AddSquare />} value="local">
               Local
             </Tab>
           </Link>
-          <Link href={"/nav/connected"}>
+          <Link href={"/connected"}>
             <Tab id="Connected" icon={<Person />} value="connected">
               Connected
             </Tab>

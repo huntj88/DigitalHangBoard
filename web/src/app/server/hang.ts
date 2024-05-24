@@ -1,5 +1,5 @@
 import "server-only";
-import { sql, VercelPoolClient } from "@vercel/postgres";
+import { QueryResultRow, sql, VercelPoolClient } from "@vercel/postgres";
 import { Session } from "@/session/SessionManager";
 import { from } from "rxjs";
 import { sumScales } from "@/data/sumScales";
@@ -33,131 +33,75 @@ export type Moment = {
 export async function getHang(hangId: number): Promise<Hang> {
   const client = await sql.connect();
   const hang = await getHangInternal(client, hangId);
-  const hangWithTimeSeries = await loadFullTimeSeriesInteral(client, hang);
   client.release();
-  return hangWithTimeSeries;
+  return hang;
 }
 
 export async function getHangs(userId: string): Promise<Hang[]> {
   const client = await sql.connect();
-  const hangs = await getHangsInternal(client, userId);
-  const hangsWithTimeSeries = await loadPreviewTimeSeriesInternal(client, hangs);
+  const hangs = await getHangsInternal(client, userId, 500);
   client.release();
-  return hangsWithTimeSeries;
+  return hangs;
 }
 
-async function getHangsInternal(client: VercelPoolClient, userId: string): Promise<Hang[]> {
+async function getHangsInternal(client: VercelPoolClient, userId: string, count: number, startFrom?: Date): Promise<Hang[]> {
   const { rows } = await client.sql`
-      SELECT hang_id,
-             board_id,
-             user_id,
-             calibration,
-             created_at
-      FROM hang
+      SELECT json_build_object(
+                     'hangId', h.hang_id,
+                     'boardId', h.board_id,
+                     'userId', h.user_id,
+                     'calibration', h.calibration,
+                     'createdAt', h.created_at,
+                     'timeSeries', json_agg(row_to_json(hm))
+             ) as hang
+      FROM hang h
+               JOIN public.hang_moment hm on h.hang_id = hm.hang_id
       WHERE user_id = ${userId}
-      ORDER BY created_at DESC;`;
-
-  return rows.map(row => {
-    const hang: Hang = {
-      hangId: row["hang_id"],
-      boardId: row["board_id"],
-      userId: row["user_id"],
-      createdAt: row["created_at"],
-      calibration: row["calibration"].split(",").map((x: string) => Number(x)),
-      timeSeries: []
-    };
-    return hang;
-  });
+      GROUP BY user_id,
+               h.hang_id,
+               h.board_id,
+               h.calibration,
+               h.created_at
+      ORDER BY created_at DESC
+      LIMIT ${count};
+  `;
+  return rows.map(row => toHang(row));
 }
 
 async function getHangInternal(client: VercelPoolClient, hangId: number): Promise<Hang> {
   const { rows } = await client.sql`
-      SELECT hang_id,
-             board_id,
-             user_id,
-             calibration,
-             created_at
-      FROM hang
-      WHERE hang_id = ${hangId};`;
-
-  const row = rows[0];
-  return {
-    hangId: row["hang_id"],
-    boardId: row["board_id"],
-    userId: row["user_id"],
-    createdAt: row["created_at"],
-    calibration: row["calibration"].split(",").map((x: string) => Number(x)),
-    timeSeries: []
-  };
-}
-
-async function loadPreviewTimeSeriesInternal(client: VercelPoolClient, hangs: Hang[]): Promise<Hang[]> {
-  const hangMap = new Map<number, Hang>();
-  hangs.forEach(hang => hangMap.set(hang.hangId, hang));
-
-  const { rows } = await client.query(`
-      SELECT date_bin(
-                 -- return fewer data points for preview          
-                     INTERVAL '800 millisecond',
-                     hang_moment.timestamp,
-                     TIMESTAMPTZ '2000-01-01'
-             ),
-             hang_id,
-             max(timestamp)     AS timestamp,
-             max(weight_pounds) as weight_pounds,
-             max(scale0)        as scale0,
-             max(scale1)        as scale1,
-             max(scale2)        as scale2,
-             max(scale3)        as scale3
-      FROM hang_moment
-      -- unsafe, but the hangIds come from the results of a different query
-      WHERE hang_id IN (${hangs.map(hang => hang.hangId)})
-      GROUP BY hang_id, 1
-      ORDER BY timestamp;
-  `, []);
-
-  rows.forEach(row => {
-    const hangId = row["hang_id"];
-    const moment: Moment = {
-      timestamp: row["timestamp"],
-      weightPounds: row["weight_pounds"],
-      scale0: row["scale0"],
-      scale1: row["scale1"],
-      scale2: row["scale2"],
-      scale3: row["scale3"]
-    };
-
-    hangMap.get(hangId)?.timeSeries.push(moment);
-  });
-
-  return hangs;
-}
-
-async function loadFullTimeSeriesInteral(client: VercelPoolClient, hang: Hang): Promise<Hang> {
-  const { rows } = await client.sql`
-      SELECT timestamp,
-             weight_pounds,
-             scale0,
-             scale1,
-             scale2,
-             scale3
-      FROM hang_moment
-      WHERE hang_id = ${hang.hangId};
+      SELECT json_build_object(
+                     'hangId', h.hang_id,
+                     'boardId', h.board_id,
+                     'userId', h.user_id,
+                     'calibration', h.calibration,
+                     'createdAt', h.created_at,
+                     'timeSeries', json_agg(row_to_json(hm))
+             ) as hang
+      FROM hang h
+               JOIN public.hang_moment hm on h.hang_id = hm.hang_id
+      WHERE hm.hang_id = ${hangId}
+      GROUP BY user_id,
+               h.hang_id,
+               h.board_id,
+               h.calibration,
+               h.created_at
+      ORDER BY created_at DESC;
   `;
+  return rows.map(row => toHang(row))[0];
+}
 
-  hang.timeSeries = rows.map(row => {
-    const moment: Moment = {
-      timestamp: row["timestamp"],
-      weightPounds: row["weight_pounds"],
-      scale0: row["scale0"],
-      scale1: row["scale1"],
-      scale2: row["scale2"],
-      scale3: row["scale3"]
-    };
-    return moment;
-  });
-
-  return hang;
+function toHang(row: QueryResultRow): Hang {
+  const rowRaw = row.hang;
+  return {
+    ...rowRaw,
+    calibration: rowRaw.calibration.split(",").map((x: string) => Number(x)),
+    createdAt: new Date(Date.parse(rowRaw.createdAt)),
+    timeSeries: rowRaw.timeSeries.map((x: any) => ({
+      ...x,
+      timestamp: new Date(Date.parse(x.timestamp))
+    }))
+  };
 }
 
 export async function saveHang(

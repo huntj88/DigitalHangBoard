@@ -8,9 +8,11 @@ import {
 } from "@fluentui/react-components";
 import { Card, CardHeader } from "@fluentui/react-components";
 import { Hang } from "@/app/server/hang";
-import { SessionGraph } from "@/components/SessionGraph";
 import { hangToSession } from "@/data/hangToSession";
 import Link from "next/link";
+import { ReactNode, Suspense } from "react";
+import { SessionGraph } from "@/components/SessionGraph";
+import { NoSSR } from "@/components/NoSSRWrapper";
 
 const resolveAsset = (asset: string) => {
   const ASSET_URL =
@@ -30,8 +32,6 @@ const useStyles = makeStyles({
   },
 
   card: {
-    width: "fit-content",
-    maxWidth: "100%",
     height: "fit-content"
   },
 
@@ -66,7 +66,7 @@ export const HangCard = (props: { hang: Hang, graphSizeOverride?: string }) => {
   }
 
   return (
-    <Link href={`/nav/connected/${props.hang.hangId}`}>
+    <Link href={`/connected/${props.hang.hangId}`}>
       <Card className={styles.card} size={"small"}>
         <header className={styles.flex}>
           <img
@@ -89,19 +89,23 @@ export const HangCard = (props: { hang: Hang, graphSizeOverride?: string }) => {
             </div>
           }
         />
-        <SessionGraph session={session} graphSizeOverride={props.graphSizeOverride} />
+        <Suspense fallback={<p>Loading</p>}>
+          {/*{session.scaleData.length > 0 && session.scaleData[0].date.getTime() > new Date().getTime() - 1000 * 60 * 60 * 24 * 5 &&*/}
+          {/*  <SessionGraph session={session} graphSizeOverride={props.graphSizeOverride} />}*/}
+        </Suspense>
         <br />
       </Card>
     </Link>
   );
 };
 
-export const HangList = (props: { hangs: Hang[] }) => {
+
+export const HangListStyled = (props: { children: ReactNode[] }) => {
   const styles = useStyles();
 
   return (
     <div className={styles.main}>
-      {props.hangs.map(hang => <HangCard key={hang.hangId} hang={hang} />)}
+      {props.children}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import PageInner from "@/app/nav/local/pageInner";
+import PageInner from "@/app/(nav)/local/pageInner";
 import { saveHang } from "@/app/server/hang";
 
 export default function Page() {

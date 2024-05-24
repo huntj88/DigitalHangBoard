@@ -26,7 +26,7 @@ export default function PageInner(props: { saveHang: (userId: string, session: S
 
   return (
     <main className={styles.main}>
-      <Link href={"/nav/local/calibrate"}>Calibrate</Link>
+      <Link href={"/local/calibrate"}>Calibrate</Link>
       {isConnected ? <LiveGraphAverage /> : <BluetoothConnect />}
       {/*{isConnected && <LiveGraphIndex index={0} />}*/}
       {/*{isConnected && <LiveGraphIndex index={1} />}*/}

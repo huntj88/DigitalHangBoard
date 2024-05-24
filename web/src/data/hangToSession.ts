@@ -3,6 +3,14 @@ import { ScaleDataWeight } from "@/bluetooth/BluetoothManager";
 import { Session } from "@/session/SessionManager";
 
 export function hangToSession(hang: Hang): Session {
+  if (hang.timeSeries.length === 0) {
+    return {
+      active: false,
+      id: hang.hangId.toString(),
+      scaleData: [],
+      calibration: hang.calibration
+    };
+  }
   const sessionData: ScaleDataWeight[] = hang.timeSeries
       ?.map(moment => {
         return [
