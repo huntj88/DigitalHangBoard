@@ -65,6 +65,11 @@ export const HangCard = (props: { hang: Hang, graphSizeOverride?: string }) => {
     maxWeightPounds = max.weightPounds;
   }
 
+  const shouldRenderGraph = session.scaleData.length > 0 &&
+    (
+      session.scaleData.length <= 3 ||
+      session.scaleData[0].date.getTime() > new Date().getTime() - 1000 * 60 * 60 * 24 * 5
+    );
   return (
     <Link href={`/connected/${props.hang.hangId}`}>
       <Card className={styles.card} size={"small"}>
@@ -89,10 +94,7 @@ export const HangCard = (props: { hang: Hang, graphSizeOverride?: string }) => {
             </div>
           }
         />
-        <Suspense fallback={<p>Loading</p>}>
-          {/*{session.scaleData.length > 0 && session.scaleData[0].date.getTime() > new Date().getTime() - 1000 * 60 * 60 * 24 * 5 &&*/}
-          {/*  <SessionGraph session={session} graphSizeOverride={props.graphSizeOverride} />}*/}
-        </Suspense>
+        {shouldRenderGraph && <SessionGraph session={session} graphSizeOverride={props.graphSizeOverride} />}
         <br />
       </Card>
     </Link>
