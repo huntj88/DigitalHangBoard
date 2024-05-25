@@ -99,6 +99,7 @@ function toHang(row: QueryResultRow): Hang {
     createdAt: new Date(Date.parse(rowRaw.createdAt)),
     timeSeries: rowRaw.timeSeries.map((x: any) => ({
       ...x,
+      weightPounds: x.weight_pounds,
       timestamp: new Date(Date.parse(x.timestamp))
     }))
   };

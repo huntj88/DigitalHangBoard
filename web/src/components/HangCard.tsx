@@ -50,6 +50,7 @@ export const HangCard = (props: { hang: Hang, graphSizeOverride?: string }) => {
   const session = hangToSession(props.hang);
   const styles = useStyles();
 
+  // TODO: somewhere floats are getting truncated into integers on 2024-05-24 02:28:49.871000 +00:00, values before that have decimals, likely in db bulk insert change?
   let maxWeightPounds = 0;
   if (props.hang.timeSeries && props.hang.timeSeries.length > 0) {
     // TODO: read from report on hang itself/create reports that are associated with hang
@@ -67,6 +68,8 @@ export const HangCard = (props: { hang: Hang, graphSizeOverride?: string }) => {
   const shouldRenderGraph = session.scaleData.length > 0 &&
     (
       session.scaleData.length <= 3 ||
+        // just a bad attempt at limiting slowness, having multiple graphs on screen slows render
+        // TODO: something better
       session.scaleData[0].date.getTime() > new Date().getTime() - 1000 * 60 * 60 * 24 * 5
     );
   return (
@@ -89,7 +92,7 @@ export const HangCard = (props: { hang: Hang, graphSizeOverride?: string }) => {
           description={
             <div>
               <p>date: {props.hang.createdAt.toString()}</p>
-              <p>max weight: {maxWeightPounds} pounds</p>
+              {maxWeightPounds && <p>max weight: {maxWeightPounds} pounds</p>}
             </div>
           }
         />

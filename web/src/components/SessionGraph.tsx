@@ -110,8 +110,7 @@ const useStyles = makeStyles({
     height: "fit-content"
   },
   graph: {
-    minWidth: "20vw",
-    minHeight: "20vw"
+    minHeight: "30vh"
   }
 });
 
