@@ -83,8 +83,11 @@ void loop() {
       sumWeight += calculateWeightFromValue(index, valueForIndex);
     }
 
-    float maxWeight = trackAndGetMaxWeight(sumWeight);
-    displayWeight(sumWeight, maxWeight);
+    float calibratedSum = calibrateSumWeight(sumWeight);
+
+
+    float maxWeight = trackAndGetMaxWeight(calibratedSum);
+    displayWeight(calibratedSum, maxWeight);
   } else {
     Serial.println(errors);
     displayErrors(errors);
@@ -130,4 +133,9 @@ float trackAndGetMaxWeight(float sumWeight) {
   } else {
     return lastAttemptMax;
   }
+}
+
+float calibrateSumWeight(float sumWeight) {
+  float scaleFactor = 1.1071; // found with weight applied through handboard hold
+  return scaleFactor * sumWeight;
 }

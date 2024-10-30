@@ -35,8 +35,12 @@ export function sumScales(dataFromAllScales: Observable<ScaleDataWeight>): Obser
       );
 
       const scaleTotal = scale0Weight + scale1Weight + scale2Weight + scale3Weight;
+
+      // TODO: this scale factor should be retrieved from hangboard
+      const scaleFactor = 1.1071; // found with weight applied through handboard
+      const totalCalibrated = scaleTotal * scaleFactor
       return {
-        weightPounds: scaleTotal,
+        weightPounds: totalCalibrated,
         date: buffered[0].date,
         scale0,
         scale1,
